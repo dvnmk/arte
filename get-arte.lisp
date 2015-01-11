@@ -1,3 +1,5 @@
+#!/usr/local/bin/sbcl --noinform 
+
 (ql:quickload "yason") ;json
 (ql:quickload "drakma") ;curl
 (setf drakma:*header-stream* nil)
@@ -18,6 +20,12 @@
         (titel (alexandria:ensure-gethash "VTI" (alexandria:ensure-gethash "videoJsonPlayer" jsn))))
     (list url (apo2bar (blanko2underbar titel)))))
 
+	;; QUALITY = LQ, MQ, EQ, SQ where LQ < MQ < EQ < SQ
+	;; 		SQ = 720p 1280x720 bitrate 2200 (HD)
+	;; 		EQ = 400p 720x406 bitrate 1500
+	;; 		MQ = 400p 720x406 bitrate 800
+	;; 		LQ = 220p 320x200 bitrate 300
+
 (defun arte-info (nm)
   (get-url-y-titel (get-json nm)))
 
@@ -27,7 +35,7 @@
 (defun apo2bar (string)
   (cl-ppcre:regex-replace-all "'" string "-"))
 
-(defun wget-faulty (url output-name)
+(defun wget (url output-name)
   (with-open-file (my-stream (concatenate 'string output-name ".mp4")
                              :direction :output
                              :element-type '(unsigned-byte 8)
@@ -43,10 +51,22 @@
 
 (defun arte-bash (nm)
   (let* ((res (arte-info nm))
-         (cmd (concatenate 'string "wget" " -q " (car res)
+         (cmd (concatenate 'string "wget" " -c " " -q "(car res)
                            " -O " (concatenate 'string (cadr res)
-                                               "mp4"))))
+                                               ".mp4"))))
     (trivial-shell:shell-command cmd)))
 
+(defun gogo (sendung-nr)
+  (let* ((info (arte-info sendung-nr))
+         (url (car info))
+         (titel (cadr info))
+         (wget-cmd (list "-c" url "-O" (concatenate 'string titel ".mp4"))))
+    (run-program "/usr/local/bin/wget" wget-cmd
+                 :wait nil
+               ;  :output *standard-output*
+                 )))
 
-(arte-info "042374-000")
+;;(run-program "/bin/ls" () :output *standard-output*)
+
+
+
