@@ -18,9 +18,11 @@
         (titel (alexandria:ensure-gethash "VTI" (alexandria:ensure-gethash "videoJsonPlayer" jsn))))
     (list url (apo2bar (blanko2underbar titel)))))
 
+(defun arte-info (nm)
+  (get-url-y-titel (get-json nm)))
+
 (defun blanko2underbar (string)
   (cl-ppcre:regex-replace-all " " string "_"))
-
 
 (defun apo2bar (string)
   (cl-ppcre:regex-replace-all "'" string "-"))
@@ -36,14 +38,15 @@
            (write-byte i my-stream)))))
 
 (defun arte (nm)
-  (let ((res (get-url-y-titel (get-json nm))))
+  (let ((res (arte-info nm)))
     (wget (car res) (cadr res))))
 
 (defun arte-bash (nm)
-  (let* ((res (get-url-y-titel (get-json nm)))
+  (let* ((res (arte-info nm))
          (cmd (concatenate 'string "wget" " -q " (car res)
                            " -O " (concatenate 'string (cadr res)
                                                "mp4"))))
     (trivial-shell:shell-command cmd)))
 
 
+(arte-info "042374-000")
