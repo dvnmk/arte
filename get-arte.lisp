@@ -16,10 +16,14 @@
 (defun get-url-y-titel (jsn)
   (let ((url (alexandria:ensure-gethash "url" (alexandria:ensure-gethash "HTTP_MP4_SQ_1" (alexandria:ensure-gethash "VSR"                                                                       (alexandria:ensure-gethash "videoJsonPlayer" jsn)))))
         (titel (alexandria:ensure-gethash "VTI" (alexandria:ensure-gethash "videoJsonPlayer" jsn))))
-    (list url (blanko2underbar titel))))
+    (list url (apo2bar (blanko2underbar titel)))))
 
 (defun blanko2underbar (string)
   (cl-ppcre:regex-replace-all " " string "_"))
+
+
+(defun apo2bar (string)
+  (cl-ppcre:regex-replace-all "'" string "-"))
 
 (defun wget-faulty (url output-name)
   (with-open-file (my-stream (concatenate 'string output-name ".mp4")
