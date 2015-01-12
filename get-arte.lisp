@@ -1,10 +1,10 @@
-#!/usr/local/bin/sbcl --noinform 
+;#!/usr/local/bin/sbcl --noinform 
 
 (ql:quickload "yason")
 (ql:quickload "drakma")
 (setf drakma:*header-stream* nil)
 
-(defun get-json (nmr)
+(defun nmr2json (nmr)
   (let* ((url 
          (concatenate 'string
                       "http://arte.tv/papi/tvguide/videos/stream/player/D/"
@@ -13,25 +13,58 @@
          (vec (flexi-streams:octets-to-string (drakma:http-request url))))
     (yason:parse vec) ))
 
-(defun url-y-titel (jsn)
-  (let ((url (alexandria:ensure-gethash "url" (alexandria:ensure-gethash "HTTP_MP4_SQ_1" (alexandria:ensure-gethash "VSR"                                                                       (alexandria:ensure-gethash "videoJsonPlayer" jsn)))))
-        (titel (alexandria:ensure-gethash "VTI" (alexandria:ensure-gethash "videoJsonPlayer" jsn))))
-    (list url (apo2bar (blanko2underbar titel)))))
-
-;; QUALITY = LQ, MQ, EQ, SQ where LQ < MQ < EQ < SQ
-;; 		SQ = 720p 1280x720 bitrate 2200 (HD)
-;; 		EQ = 400p 720x406 bitrate 1500
-;; 		MQ = 400p 720x406 bitrate 800
-;; 		LQ = 220p 320x200 bitrate 300
-
-(defun arte-info (nmr)
-  (url-y-titel (get-json nmr)))
 
 (defun blanko2underbar (string)
   (cl-ppcre:regex-replace-all " " string "_"))
 
 (defun apo2bar (string)
   (cl-ppcre:regex-replace-all "'" string "-"))
+
+;; QUALITY = LQ, MQ, EQ, SQ where LQ < MQ < EQ < SQ
+;; 		SQ = 720p 1280x720 bitrate 2200 (HD)
+;; 		EQ = 400p 720x406 bitrate 1500
+;; 		MQ = 400p 720x406 bitrate 800
+;; 		LQ = 220p 320x200 bitrate 300
+;; ele
+;; "videoJsonPlayer" -> 
+;; VTI : titel
+;; VDA : aired
+;; VRU : bis gultig
+;; VDE : beschreibung
+;; V7T : kurz besch.
+;; VSR 's key : video modes
+;; (alexandria:hash-table-keys (key-aus-json foojson "VSR"))
+;; kurz datum
+;; (ALEXANDRIA:ensure-gethash "VS5" (VALUE-AUS-JSON foojson "VST"))
+(defun info (key)
+  (alexandria:ensure-gethash key *nivo*))
+
+(defun arte-info (nmr)
+  (defparameter *nivo* (alexandria:ensure-gethash "videoJsonPlayer"(nmr2json nmr)))
+  (format t "~&* Titel : ~S" (info "VTI"))
+  (format t "~&* Aired : ~S" (info "VDA"))
+  (format t "~&* Bis : ~S" (info "VRU"))
+;;  (format t "~&* Bes : ~S" (info "VDE"))
+  (format t "~&* Kurz.Bes : ~S" (info "V7T"))
+  (format t "~&* Modes : ~S" (alexandria:hash-table-keys (info "VSR")))
+  )
+
+(defun arte-get (nmr)
+  (defparameter *nivo* (alexandria:ensure-gethash "videoJsonPlayer" (nmr2json nmr)))
+  (let* ((url (alexandria:ensure-gethash "url" (alexandria:ensure-gethash "HTTP_MP4_SQ_1" (was "VSR"))))
+         (kurz-datum (alexandria:ensure-gethash "VS5" (info "VST")))
+         (file-name (concatenate 'string
+                                 (apo2bar (blanko2underbar (info "VTI")))
+                                 kurz-datum
+                                 ".mp4"))
+         (wget-cmd (list "-c" url "-O" file-name)))
+    (format t "~& ~A" url)
+    (format t "~& =>")
+    (format t "~& ~A" file-name)
+    (princ wget-cmd)
+    ;; (sb-ext:run-program "/usr/local/bin/wget" wget-cmd :wait nil
+                        ;;:output *standard-output*
+                        ))
 
 ;; heap exhausted faulty
 ;; (defun wget (url output-name)
@@ -48,15 +81,19 @@
 ;;   (let ((res (arte-info nmr)))
 ;;     (wget (car res) (cadr res))))
 
-(defun gogo (nmr)
-  (let* ((info (arte-info nmr))
-         (url (car info))
-         (titel (cadr info))
-         (wget-cmd (list "-c" url "-O" (concatenate 'string titel ".mp4"))))
-    (princ wget-cmd)
-    ;; (run-program "/usr/local/bin/wget" wget-cmd
-    ;;                 :wait nil
-    ;;                                     ;  :output *standard-output*
-    ;;                 )
-    ))
+ (defun gogogo (nmr)
+     (let* ((info (arte-info nmr))
+            (url (car info))
+            (titel (cadr info))
+            (wget-cmd (list "-c" url "-O" (concatenate 'string  titel ".mp4"))))
+       (princ wget-cmd)
+       (sb-ext:run-program "/usr/local/bin/wget" wget-cmd
+                           :wait nil
+                                        ;  :output *standard-output*
+                           )
+       ))
+
+;; ** DONE filename zv datum.
+;; ** TODO fur shell / clisp, sbcl
+
 
