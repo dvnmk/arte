@@ -53,12 +53,10 @@
          (url (car info))
          (titel (cadr info))
          (wget-cmd (list "-c" url "-O" (concatenate 'string titel ".mp4"))))
-    (run-program "/usr/local/bin/wget" wget-cmd
-                 :wait nil
-               ;  :output *standard-output*
-                 )))
-
-;;(run-program "/bin/ls" () :output *standard-output*)
-
-
+    (princ wget-cmd)
+    ;; (run-program "/usr/local/bin/wget" wget-cmd
+    ;;                 :wait nil
+    ;;                                     ;  :output *standard-output*
+    ;;                 )
+    ))
 
