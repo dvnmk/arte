@@ -36,6 +36,7 @@
 ;; (alexandria:hash-table-keys (key-aus-json foojson "VSR"))
 ;; kurz datum
 ;; (ALEXANDRIA:ensure-gethash "VS5" (VALUE-AUS-JSON foojson "VST"))
+
 (defun info (key)
   (alexandria:ensure-gethash key *nivo*))
 
@@ -43,15 +44,15 @@
   (defparameter *nivo* (alexandria:ensure-gethash "videoJsonPlayer"(nmr2json nmr)))
   (format t "~&* Titel : ~S" (info "VTI"))
   (format t "~&* Aired : ~S" (info "VDA"))
-  (format t "~&* Bis : ~S" (info "VRU"))
-;;  (format t "~&* Bes : ~S" (info "VDE"))
+  (format t "~&* Bis   : ~S" (info "VRU"))
   (format t "~&* Kurz.Bes : ~S" (info "V7T"))
+  (format t "~&* Bes : ~S" (info "VDE"))
   (format t "~&* Modes : ~S" (alexandria:hash-table-keys (info "VSR")))
   )
 
 (defun arte-get (nmr)
   (defparameter *nivo* (alexandria:ensure-gethash "videoJsonPlayer" (nmr2json nmr)))
-  (let* ((url (alexandria:ensure-gethash "url" (alexandria:ensure-gethash "HTTP_MP4_SQ_1" (was "VSR"))))
+  (let* ((url (alexandria:ensure-gethash "url" (alexandria:ensure-gethash "HTTP_MP4_SQ_1" (info "VSR"))))
          (kurz-datum (alexandria:ensure-gethash "VS5" (info "VST")))
          (file-name (concatenate 'string
                                  (apo2bar (blanko2underbar (info "VTI")))
@@ -62,9 +63,7 @@
     (format t "~& =>")
     (format t "~& ~A" file-name)
     (princ wget-cmd)
-    ;; (sb-ext:run-program "/usr/local/bin/wget" wget-cmd :wait nil
-                        ;;:output *standard-output*
-                        ))
+    (sb-ext:run-program "/usr/local/bin/wget" wget-cmd :wait nil)))
 
 ;; heap exhausted faulty
 ;; (defun wget (url output-name)
@@ -81,19 +80,10 @@
 ;;   (let ((res (arte-info nmr)))
 ;;     (wget (car res) (cadr res))))
 
- (defun gogogo (nmr)
-     (let* ((info (arte-info nmr))
-            (url (car info))
-            (titel (cadr info))
-            (wget-cmd (list "-c" url "-O" (concatenate 'string  titel ".mp4"))))
-       (princ wget-cmd)
-       (sb-ext:run-program "/usr/local/bin/wget" wget-cmd
-                           :wait nil
-                                        ;  :output *standard-output*
-                           )
-       ))
-
 ;; ** DONE filename zv datum.
 ;; ** TODO fur shell / clisp, sbcl
+;; ** TODO Unicode suppport als file-name
 
 
+(defmacro no-quote (string)
+  `(symbol-name ',string))
