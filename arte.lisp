@@ -45,30 +45,29 @@
   (alexandria:ensure-gethash key tbl))
 
 (defun arte-info (nmr)
-  (let ((nivo (alexandria:ensure-gethash "videoJsonPlayer"(nmr2json nmr))))
-    (format t "~&* TITEL : ~S" (info "VTI" nivo))
-    (format t "~&* AIRED : ~S" (info "VDA" nivo))
-    (format t "~&* BIS   : ~S" (info "VRU" nivo))
-    (format t "~&* WAS   : ~S" (info "V7T" nivo))
-    (format t "~&* INFO  : ~S" (info "infoProg" nivo))
-    (format t "~&* BES   : ~S" (info "VDE" nivo))
-    (format t "~&* MODES : ~S" (alexandria:hash-table-keys (info "VSR" nivo )))))
+  (let ((nivo-0 (alexandria:ensure-gethash "videoJsonPlayer"(nmr2json nmr))))
+    (format t "~&* TITEL : ~S" (info "VTI" nivo-0))
+    (format t "~&* AIRED : ~S" (info "VDA" nivo-0))
+    (format t "~&* BIS   : ~S" (info "VRU" nivo-0))
+    (format t "~&* WAS   : ~S" (info "V7T" nivo-0))
+    (format t "~&* INFO  : ~S" (info "infoProg" nivo-0))
+    (format t "~&* BES   : ~S" (info "VDE" nivo-0))
+    (format t "~&* MODES : ~S" (alexandria:hash-table-keys (info "VSR" nivo-0 )))))
 
 (defun arte-get (nmr)
-  (let* ((nivo (alexandria:ensure-gethash "videoJsonPlayer" (nmr2json nmr)))
-         (url (alexandria:ensure-gethash "url" (alexandria:ensure-gethash "HTTP_MP4_SQ_1" (info "VSR" nivo))))
-         (kurz-datum (alexandria:ensure-gethash "VS5" (info "VST" nivo)))
+  (let* ((nivo-0 (alexandria:ensure-gethash "videoJsonPlayer" (nmr2json nmr)))
+         (url (alexandria:ensure-gethash "url" (alexandria:ensure-gethash "HTTP_MP4_SQ_1" (info "VSR" nivo-0))))
+         (kurz-datum (alexandria:ensure-gethash "VS5" (info "VST" nivo-0)))
          (file-name (ASCIIFY
                      (concatenate 'string
-                                  (apo2bar (blanko2underbar (info "VTI" nivo)))
-                                  kurz-datum
-                                  ".mp4")))
+                                  (apo2bar (blanko2underbar (info "VTI" nivo-0)))
+                                  "-" kurz-datum ".mp4")))
          (wget-cmd (list "-c" url "-O" file-name)))
     (format t "~& ~A" url)
     (format t "~& =>")
     (format t "~& ~A" file-name)
     (format t "~& ~A" wget-cmd)
-    ;; (sb-ext:run-program "/usr/local/bin/wget" wget-cmd :wait nil)
+    (sb-ext:run-program "/usr/local/bin/wget" wget-cmd :wait nil)
     ))
 
 ;; heap exhausted faulty
@@ -97,6 +96,8 @@
 (defun getcwd ()
   #+SBCL (sb-unix:posix-getcwd)
   #+CCL (current-directory))
+
+(cwd "arte-info")
 
 ;;(load "asciify.lisp")
 

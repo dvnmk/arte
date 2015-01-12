@@ -14,4 +14,4 @@
                                 sendung
 * DONE filename zv datum.
 * TODO fur shell / clisp, sbcl
-* TODO Unicode suppport als file-name
+* DONE Unicode suppport als file-name > asciify filename
