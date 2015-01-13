@@ -67,7 +67,6 @@
     (sb-ext:run-program "/usr/local/bin/wget" wget-cmd :wait nil)
     ))
 
-
 (defmacro arte-info-m (nmr6-nmr3) 
   `(let ((nmr  (symbol-name ',nmr6-nmr3)))
      (arte-info nmr)))
