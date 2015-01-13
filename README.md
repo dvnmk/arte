@@ -18,8 +18,9 @@
 
 Example
 -------
+'''
 CL-USER> (ARTE-INFO-M 045260-001)
-* TITEL : "ErÃ¶ffnungskonzert Salzburger Festspiele 2011"
+* TITEL : "Erã¶ffnungskonzert Salzburger Festspiele 2011"
 * AIRED : 12/01/2015 02:00:00 +0100 - 19/01/2015 02:05:24 +0100
 * CASE  : 408_maestro
 * INFO  : (Deutschland, 2011, 87mn) ZDF
@@ -30,3 +31,4 @@ CL-USER> (ARTE-INFO-M 045260-001)
 * WGET  :
  wget -c http://artestras.vo.llnwd.net/v2/am/HBBTV/045260-001-B_SQ_1_VO-STA_01623913_MP4-2200_AMM-HBBTV.mp4 -O ErAffnungskonzert_Salzburger_Festspiele_2011-12012015.mp4
 NIL
+'''
