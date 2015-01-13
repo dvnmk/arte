@@ -5,9 +5,6 @@
 (setf drakma:*header-stream* nil)
 
 
-(defmacro no-quote (etwas) 
-  `(symbol-name ',etwas))
-
 (defun nmr2json (nmr)
   (let* ((url 
          (concatenate 'string
@@ -45,7 +42,7 @@
   (alexandria:ensure-gethash key tbl))
 
 (defun arte-info (nmr)
-  (let ((nivo-0 (alexandria:ensure-gethash "videoJsonPlayer"(nmr2json nmr))))
+  (let ((nivo-0 (alexandria:ensure-gethash "videoJsonPlayer" (nmr2json nmr))))
     (format t "~&* TITEL : ~S" (info "VTI" nivo-0))
     (format t "~&* AIRED : ~S" (info "VDA" nivo-0))
     (format t "~&* BIS   : ~S" (info "VRU" nivo-0))
@@ -69,6 +66,15 @@
     (format t "~& ~A" wget-cmd)
     (sb-ext:run-program "/usr/local/bin/wget" wget-cmd :wait nil)
     ))
+
+
+(defmacro arte-info-m (nmr6-nmr3) 
+  `(let ((nmr  (symbol-name ',nmr6-nmr3)))
+     (arte-info nmr)))
+
+(defun arte-get-m (nmr6-nmr3)
+  `(let ((nmr (symbol-name ',nmr6-nmr3)))
+     (arte-get nmr)))
 
 ;; heap exhausted faulty
 ;; (defun wget (url output-name)
@@ -97,7 +103,7 @@
   #+SBCL (sb-unix:posix-getcwd)
   #+CCL (current-directory))
 
-(cwd "arte-info")
+(cwd "/Users/dvnmk/Desktop")
 
 ;;(load "asciify.lisp")
 
