@@ -26,17 +26,6 @@
 ;; 		EQ = 400p 720x406 bitrate 1500
 ;; 		MQ = 400p 720x406 bitrate 800
 ;; 		LQ = 220p 320x200 bitrate 300
-;; ele
-;; "videoJsonPlayer" -> 
-;; VTI : titel
-;; VDA : aired
-;; VRU : bis gultig
-;; VDE : beschreibung
-;; V7T : kurz besch.
-;; VSR 's key : video modes
-;; (alexandria:hash-table-keys (key-aus-json foojson "VSR"))
-;; kurz datum
-;; (ALEXANDRIA:ensure-gethash "VS5" (VALUE-AUS-JSON foojson "VST"))
 
 (defun info (key tbl)
   (alexandria:ensure-gethash key tbl))
@@ -44,12 +33,13 @@
 (defun arte-info (nmr)
   (let ((nivo-0 (alexandria:ensure-gethash "videoJsonPlayer" (nmr2json nmr))))
     (format t "~&* TITEL : ~S" (info "VTI" nivo-0))
-    (format t "~&* AIRED : ~S" (info "VDA" nivo-0))
-    (format t "~&* BIS   : ~S" (info "VRU" nivo-0))
-    (format t "~&* WAS   : ~S" (info "V7T" nivo-0))
-    (format t "~&* INFO  : ~S" (info "infoProg" nivo-0))
+    (format t "~&* AIRED : ~A - ~A" (info "VDA" nivo-0)
+            (info "VRU" nivo-0))
+    (format t "~&* CASE  : ~A" (info "caseProgram" nivo-0))
+    (format t "~&* INFO  : ~A" (info "infoProg" nivo-0))
+    (format t "~&* KURZ  : ~S" (ASCIIFY (info "V7T" nivo-0)))
     (format t "~&* BES   : ~S" (info "VDE" nivo-0))
-    (format t "~&* MODES : ~S" (alexandria:hash-table-keys (info "VSR" nivo-0 )))))
+    (format t "~&* MODES : ~A" (alexandria:hash-table-keys (info "VSR" nivo-0 )))))
 
 (defun arte-get (nmr)
   (let* ((nivo-0 (alexandria:ensure-gethash "videoJsonPlayer" (nmr2json nmr)))
@@ -71,7 +61,7 @@
   `(let ((nmr  (symbol-name ',nmr6-nmr3)))
      (arte-info nmr)))
 
-(defun arte-get-m (nmr6-nmr3)
+(defmacro arte-get-m (nmr6-nmr3)
   `(let ((nmr (symbol-name ',nmr6-nmr3)))
      (arte-get nmr)))
 
