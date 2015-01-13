@@ -31,7 +31,15 @@
   (alexandria:ensure-gethash key tbl))
 
 (defun arte-info (nmr)
-  (let ((nivo-0 (alexandria:ensure-gethash "videoJsonPlayer" (nmr2json nmr))))
+  (let* ((nivo-0 (alexandria:ensure-gethash "videoJsonPlayer" (nmr2json nmr)))
+        (url (alexandria:ensure-gethash "url" (alexandria:ensure-gethash "HTTP_MP4_SQ_1" (info "VSR" nivo-0))))
+        (kurz-datum (alexandria:ensure-gethash "VS5" (info "VST" nivo-0)))
+        (file-name (ASCIIFY
+                     (concatenate 'string
+                                  (apo2bar (blanko2underbar (info "VTI" nivo-0)))
+                                  "-" kurz-datum ".mp4")))
+        (raw-cmd  (concatenate 'string  "wget -c " url " -O " file-name))
+        )
     (format t "~&* TITEL : ~S" (info "VTI" nivo-0))
     (format t "~&* AIRED : ~A - ~A" (info "VDA" nivo-0)
             (info "VRU" nivo-0))
@@ -39,7 +47,9 @@
     (format t "~&* INFO  : ~A" (info "infoProg" nivo-0))
     (format t "~&* KURZ  : ~S" (ASCIIFY (info "V7T" nivo-0)))
     (format t "~&* BES   : ~S" (info "VDE" nivo-0))
-    (format t "~&* MODES : ~A" (alexandria:hash-table-keys (info "VSR" nivo-0 )))))
+    (format t "~&* MODES : ~A" (alexandria:hash-table-keys (info "VSR" nivo-0 )))
+    (format t "~&* WGET  :")
+    (format t "~& ~A" raw-cmd)    ))
 
 (defun arte-get (nmr)
   (let* ((nivo-0 (alexandria:ensure-gethash "videoJsonPlayer" (nmr2json nmr)))
@@ -49,11 +59,12 @@
                      (concatenate 'string
                                   (apo2bar (blanko2underbar (info "VTI" nivo-0)))
                                   "-" kurz-datum ".mp4")))
-         (wget-cmd (list "-c" url "-O" file-name)))
+         (wget-cmd (list "-c" url "-O" file-name))
+         (raw-cmd  (concatenate 'string  "wget -c " url " -O " file-name)))
     (format t "~& ~A" url)
     (format t "~& =>")
     (format t "~& ~A" file-name)
-    (format t "~& ~A" wget-cmd)
+    ;(format t "~& ~A" raw-cmd)
     (sb-ext:run-program "/usr/local/bin/wget" wget-cmd :wait nil)
     ))
 
