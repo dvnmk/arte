@@ -1,17 +1,17 @@
-# arte-info
+# arte
 
        nummer
-     \   |   /
-      \  |  /
-    +--\ v /----------------------------+
+         |    
+      \  v  /
+    +--\   /----------------------------+
     |                                   |
-    |     (arte-info) dvnmk 2015        |
+    |        (arte) dvnmk 2015          |
     |                                   |
     +---------------------------/   \---+
                                /  |  \
-                              /   |   \
-                                  v
+                                  v     
                                 sendung
+                                       
 * DONE filename zv datum.
 * TODO fur shell / clisp, sbcl
 * DONE Unicode suppport als file-name => asciify filename
