@@ -97,5 +97,5 @@
 (defun ASCIIFY (x)
   "bypass"
   x)
-(cwd #P"~/Desktop")
+(cwd #P"~/arte7")
 
