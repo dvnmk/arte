@@ -63,7 +63,8 @@
 ;;    (format t "~& ~A" file-name)
 ;;    (format t "~& ~A" raw-cmd) 
     (run-program "wget"
-                 (list "-c" baz "-O" file-name "--progress=dot:mega"
+                 (list "-c" baz "-O" file-name
+                       ;;"--progress=dot:mega"
                        ;;"--no-verbose"
                        )
                  :wait nil
