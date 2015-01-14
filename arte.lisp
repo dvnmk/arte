@@ -44,9 +44,10 @@
     (format t "~&* INFO  : ~A" (info "infoProg" nivo-0))
     (format t "~&* KURZ  : ~S" (ASCIIFY (info "V7T" nivo-0)))
     (format t "~&* BES   : ~S" (info "VDE" nivo-0))
-    (format t "~&* MODES : ~A" (alexandria:hash-table-keys (info "VSR" nivo-0 )))
-    (format t "~&* CMD  :")
-    (format t "~& ~A" raw-cmd)    ))
+    ;;    (format t "~&* MODES : ~A" (alexandria:hash-table-keys (info "VSR" nivo-0 )))
+    ;;(format t "~&* CMD  :")
+    ;;(format t "~& ~A" raw-cmd)
+    ))
 
 (Defun arte-get (nmr)
   (let* ((nivo-0 (alexandria:ensure-gethash "videoJsonPlayer" (nmr2json nmr)))
@@ -56,12 +57,12 @@
                      (concatenate 'string
                                   (apo2bar (blanko2underbar (info "VTI" nivo-0)))
                                   "-" kurz-datum ".mp4")))
-         (baz (format nil "~A" url))  ;base-string 2 simple-base-string!
+         (url-baz (format nil "~A" url))  ;base-string 2 simple-base-string!
          (wget-cmd (concatenate 'string
-                                "wget -c " baz " -O " file-name
+                                "wget -c " url-baz " -O " file-name
                                 " --progress=dot:giga "
                                 " --no-verbose "
-                                " -o " (concatenate 'string file-name "-log.txt")
+                                " -o " (concatenate 'string file-name ".log")
                                 " --tries=4")))
     (run-program "sh"
                  (list "-c" wget-cmd)
