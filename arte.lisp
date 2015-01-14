@@ -1,7 +1,7 @@
 (ql:quickload "yason")
 (ql:quickload "drakma")
 (setf drakma:*header-stream* nil)
-(load #P"~/arte/asciify.lisp")
+;;(load #P"~/arte/asciify.lisp")
 
 (defun nmr2json (nmr)
   (let* ((url 
@@ -56,15 +56,14 @@
                      (concatenate 'string
                                   (apo2bar (blanko2underbar (info "VTI" nivo-0)))
                                   "-" kurz-datum ".mp4")))
-         (raw-cmd           (concatenate 'string  "-c " url " -O " file-name))
-         (baz (format nil "~A" url)))
+         (baz (format nil "~A" url))) ;base-string 2 simple-base-string!
     
     ;;    (format t "~& ~A" url)
 ;;    (format t "~& =>")
 ;;    (format t "~& ~A" file-name)
-    (format t "~& ~A" raw-cmd) ;base-string 2 simple-base-string!
+;;    (format t "~& ~A" raw-cmd) 
     (run-program "wget"
-                 (list "-c" baz "-O" file-name)
+                 (list "-c" baz "-O" file-name "--progress=dot:mega" "--no-verbose")
                  :wait nil
                  :output *standard-output*))
     ))
