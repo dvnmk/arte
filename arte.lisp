@@ -56,16 +56,18 @@
                      (concatenate 'string
                                   (apo2bar (blanko2underbar (info "VTI" nivo-0)))
                                   "-" kurz-datum ".mp4")))
-         (baz (format nil "~A" url))) ;base-string 2 simple-base-string!
-    (run-program "wget"
-                 (list "-c" baz "-O" file-name
-                       "--progress=dot:giga"
-                       "--no-verbose"
-                       "-o" (concatenate 'string file-name "-log.txt")
-                       "--tries=4"
-                       )
+         (baz (format nil "~A" url))  ;base-string 2 simple-base-string!
+         (wget-cmd (concatenate 'string
+                                "wget -c " baz " -O " file-name
+                                " --progress=dot:giga "
+                                " --no-verbose "
+                                " -o " (concatenate 'string file-name "-log.txt")
+                                " --tries=4")))
+    (run-program "sh"
+                 (list "-c" wget-cmd)
                  :wait nil
-                 :output *standard-output*)))
+                 :output *standard-output*))
+  )
 
 (defmacro i (nmr6-nmr3) 
   `(let ((nmr  (symbol-name ',nmr6-nmr3)))
