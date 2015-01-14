@@ -48,7 +48,7 @@
     (format t "~&* CMD  :")
     (format t "~& ~A" raw-cmd)    ))
 
-(defun arte-get (nmr)
+(Defun arte-get (nmr)
   (let* ((nivo-0 (alexandria:ensure-gethash "videoJsonPlayer" (nmr2json nmr)))
          (url (alexandria:ensure-gethash "url" (alexandria:ensure-gethash "HTTP_MP4_SQ_1" (info "VSR" nivo-0))))
          (kurz-datum (alexandria:ensure-gethash "VS5" (info "VST" nivo-0)))
@@ -57,24 +57,21 @@
                                   (apo2bar (blanko2underbar (info "VTI" nivo-0)))
                                   "-" kurz-datum ".mp4")))
          (baz (format nil "~A" url))) ;base-string 2 simple-base-string!
-    
-    ;;    (format t "~& ~A" url)
-;;    (format t "~& =>")
-;;    (format t "~& ~A" file-name)
-;;    (format t "~& ~A" raw-cmd) 
     (run-program "wget"
                  (list "-c" baz "-O" file-name
-                       ;;"--progress=dot:mega"
-                       ;;"--no-verbose"
+                       "--progress=dot:giga"
+                       "--no-verbose"
+                       "-o" (concatenate 'string file-name "-log.txt")
+                       "--tries=4"
                        )
                  :wait nil
                  :output *standard-output*)))
 
-(defmacro arte-info-m (nmr6-nmr3) 
+(defmacro i (nmr6-nmr3) 
   `(let ((nmr  (symbol-name ',nmr6-nmr3)))
      (arte-info nmr)))
 
-(defmacro arte-get-m (nmr6-nmr3)
+(defmacro g (nmr6-nmr3)
   `(let ((nmr (symbol-name ',nmr6-nmr3)))
      (arte-get nmr)))
 
