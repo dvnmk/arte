@@ -59,7 +59,7 @@
                      (concatenate 'string
                                   (apo2bar (blanko2underbar (info "VTI" nivo-0)))
                                   "-" kurz-datum ".mp4")))
-         (setf raw-cmd  (concatenate 'string  "wget --progress=dot:mega -c " url " -O " file-name))
+         (raw-cmd  (concatenate 'string  "wget --progress=dot:mega -c " url " -O " file-name))
          )
     (format t "~& ~A" url)
     (format t "~& =>")
