@@ -1,5 +1,3 @@
-;#!/usr/local/bin/sbcl --noinform 
-
 (ql:quickload "yason")
 (ql:quickload "drakma")
 (setf drakma:*header-stream* nil)
@@ -13,7 +11,6 @@
                       "_PLUS7-D/ALL/ALL.json"))
          (vec (flexi-streams:octets-to-string (drakma:http-request url))))
     (yason:parse vec) ))
-
 
 (defun blanko2underbar (string)
   (cl-ppcre:regex-replace-all " " string "_"))
@@ -59,13 +56,17 @@
                      (concatenate 'string
                                   (apo2bar (blanko2underbar (info "VTI" nivo-0)))
                                   "-" kurz-datum ".mp4")))
-         (raw-cmd  (concatenate 'string  "wget --progress=dot:mega -c " url " -O " file-name))
-         )
-    (format t "~& ~A" url)
-    (format t "~& =>")
-    (format t "~& ~A" file-name)
-    (format t "~& ~A" raw-cmd)
-   (run-program "/usr/local/bin/wget" raw-cmd :wait nil)
+         (raw-cmd           (concatenate 'string  "-c " url " -O " file-name))
+         (baz (format nil "~A" url)))
+    
+    ;;    (format t "~& ~A" url)
+;;    (format t "~& =>")
+;;    (format t "~& ~A" file-name)
+    (format t "~& ~A" raw-cmd) ;base-string 2 simple-base-string!
+    (run-program "wget"
+                 (list "-c" baz "-O" file-name)
+                 :wait nil
+                 :output *standard-output*))
     ))
 
 (defmacro arte-info-m (nmr6-nmr3) 
@@ -87,15 +88,11 @@
 ;;       (loop for i across content do
 ;;            (write-byte i my-stream)))))
 
-;; (defun arte (nmr)
-;;   (let ((res (arte-info nmr)))
-;;     (wget (car res) (cadr res))))
-
 ;; ** DONE filename zv datum.
 ;; ** TODO fur shell / clisp, sbcl
 ;; ** TODO Unicode suppport als file-name
+
 (defun ASCIIFY (x)
   "bypass"
   x)
 (cwd #P"~/arte7")
-
