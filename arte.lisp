@@ -30,7 +30,8 @@
 (defun arte-info (nmr)
   (let* ((nivo-0 (alexandria:ensure-gethash "videoJsonPlayer" (nmr2json nmr)))
         (url (alexandria:ensure-gethash "url" (alexandria:ensure-gethash "HTTP_MP4_SQ_1" (info "VSR" nivo-0))))
-        (kurz-datum (alexandria:ensure-gethash "VS5" (info "VST" nivo-0)))
+         (kurz-datum (subseq (alexandria:ensure-gethash "VS5" (info "VST" nivo-0))
+                             0 4))
          (file-name
           (ASCIIFY (concatenate 'string
                                 (apo2bar (blanko2underbar (info "VTI" nivo-0)))
@@ -46,21 +47,23 @@
     (format t "~&* BES   : ~S" (info "VDE" nivo-0))
     ;;    (format t "~&* MODES : ~A" (alexandria:hash-table-keys (info "VSR" nivo-0 )))
     ;;(format t "~&* CMD  :")
-    ;;(format t "~& ~A" raw-cmd)
+    (format t "~& ~A" raw-cmd)
     ))
 
 (Defun arte-get (nmr)
   (let* ((nivo-0 (alexandria:ensure-gethash "videoJsonPlayer" (nmr2json nmr)))
          (url (alexandria:ensure-gethash "url" (alexandria:ensure-gethash "HTTP_MP4_SQ_1" (info "VSR" nivo-0))))
-         (kurz-datum (alexandria:ensure-gethash "VS5" (info "VST" nivo-0)))
+         (kurz-datum (subseq (alexandria:ensure-gethash "VS5" (info "VST" nivo-0))
+                             0 4))
          (file-name (ASCIIFY
                      (concatenate 'string
                                   (apo2bar (blanko2underbar (info "VTI" nivo-0)))
-                                  "-" kurz-datum ".mp4")))
+                                  "-" kurz-datum
+                                  ".mp4")))
          (url-baz (format nil "~A" url))  ;base-string 2 simple-base-string!
          (wget-cmd (concatenate 'string
                                 "wget -c " url-baz " -O " file-name
-                                " --progress=dot:giga "
+                                ;;" --progress=dot:giga "
                                 " --no-verbose "
                                 " -o " (concatenate 'string file-name ".log")
                                 " --tries=4")))
