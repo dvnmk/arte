@@ -43,7 +43,7 @@
     (format t "~&* TITEL : ~S" (info "VTI" nivo-0))
     (format t "~&* AIRED : ~A - ~A" (info "VDA" nivo-0)
             (info "VRU" nivo-0))
-    (format t "~&* CASE  : ~A" (info "caseProgram" nivo-0))
+b    (format t "~&* CASE  : ~A" (info "caseProgram" nivo-0))
     (format t "~&* INFO  : ~A" (info "infoProg" nivo-0))
     (format t "~&* KURZ  : ~S" (ASCIIFY (info "V7T" nivo-0)))
     (format t "~&* BES   : ~S" (info "VDE" nivo-0))
@@ -94,14 +94,6 @@
 ;; ** DONE filename zv datum.
 ;; ** TODO fur shell / clisp, sbcl
 ;; ** TODO Unicode suppport als file-name
-
-#+:SBCL
-(defun cwd (dir)
-  (sb-posix:chdir dir))
-
-(defun getcwd ()
-  #+SBCL (sb-unix:posix-getcwd)
-  #+CCL (current-directory))
 
 (cwd "/Users/dvnmk/Desktop")
 
