@@ -65,8 +65,7 @@
     (run-program "wget"
                  (list "-c" baz "-O" file-name "--progress=dot:mega" "--no-verbose")
                  :wait nil
-                 :output *standard-output*))
-    ))
+                 :output *standard-output*)))
 
 (defmacro arte-info-m (nmr6-nmr3) 
   `(let ((nmr  (symbol-name ',nmr6-nmr3)))
