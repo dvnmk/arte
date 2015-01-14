@@ -99,4 +99,3 @@
   x)
 (cwd #P"~/Desktop")
 
-(car)
