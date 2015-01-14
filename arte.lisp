@@ -9,7 +9,8 @@
                       "http://arte.tv/papi/tvguide/videos/stream/player/D/"
                       nmr
                       "_PLUS7-D/ALL/ALL.json"))
-         (vec (flexi-streams:octets-to-string (drakma:http-request url))))
+         (vec (flexi-streams:octets-to-string (drakma:http-request url)
+                                              :external-format :utf-8)))
     (yason:parse vec) ))
 
 (defun blanko2underbar (string)
@@ -28,26 +29,14 @@
   (alexandria:ensure-gethash key tbl))
 
 (defun arte-info (nmr)
-  (let* ((nivo-0 (alexandria:ensure-gethash "videoJsonPlayer" (nmr2json nmr)))
-        (url (alexandria:ensure-gethash "url" (alexandria:ensure-gethash "HTTP_MP4_SQ_1" (info "VSR" nivo-0))))
-         (kurz-datum (subseq (alexandria:ensure-gethash "VS5" (info "VST" nivo-0))
-                             0 4))
-         (file-name
-          (ASCIIFY (concatenate 'string
-                                (apo2bar (blanko2underbar (info "VTI" nivo-0)))
-                                "-" kurz-datum ".mp4")))
-         (raw-cmd  (concatenate 'string  "wget -c " url " -O " file-name))
-         )
-    (format t "~&* TITEL : ~S" (info "VTI" nivo-0))
-    (format t "~&* AIRED : ~A - ~A" (info "VDA" nivo-0)
-            (info "VRU" nivo-0))
-    (format t "~&* CASE  : ~A" (info "caseProgram" nivo-0))
-    (format t "~&* INFO  : ~A" (info "infoProg" nivo-0))
-    (format t "~&* KURZ  : ~S" (ASCIIFY (info "V7T" nivo-0)))
-    (format t "~&* BES   : ~S" (info "VDE" nivo-0))
-    ;;    (format t "~&* MODES : ~A" (alexandria:hash-table-keys (info "VSR" nivo-0 )))
-    ;;(format t "~&* CMD  :")
-    (format t "~& ~A" raw-cmd)
+  (let* ((nivo-0 (alexandria:ensure-gethash "videoJsonPlayer" (nmr2json nmr))))
+    (format t "~&* TITL : ~S" (info "VTI" nivo-0))
+    (format t "~&* KURZ : ~S" (ASCIIFY (info "V7T" nivo-0)))
+    (format t "~&* CASE : ~A" (info "caseProgram" nivo-0))
+    (format t "~&* INFO : ~A" (info "infoProg" nivo-0))
+    (format t "~&* AIRD : ~A - ~A" (info "VDA" nivo-0)(info "VRU" nivo-0))
+    (format t "~&* BES. : ~S" (info "VDE" nivo-0))
+    ;;(format t "~&* MODES : ~A" (alexandria:hash-table-keys (info "VSR" nivo-0 )))
     ))
 
 (Defun arte-get (nmr)
@@ -60,9 +49,9 @@
                                   (apo2bar (blanko2underbar (info "VTI" nivo-0)))
                                   "-" kurz-datum
                                   ".mp4")))
-         (url-baz (format nil "~A" url))  ;base-string 2 simple-base-string!
+         (url-simple-string (format nil "~A" url))  ;base-string 2 simple-base-string!
          (wget-cmd (concatenate 'string
-                                "wget -c " url-baz " -O " file-name
+                                "wget -c " url-simple-string " -O " file-name
                                 ;;" --progress=dot:giga "
                                 " --no-verbose "
                                 " -o " (concatenate 'string file-name ".log")
@@ -100,3 +89,7 @@
   "bypass"
   x)
 (cwd #P"~/arte7")
+
+(defun kill ()
+  (run-program "killall" '("wget")
+               :output *standard-output*))
