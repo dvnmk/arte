@@ -65,7 +65,7 @@
     (format t "~& =>")
     (format t "~& ~A" file-name)
     (format t "~& ~A" raw-cmd)
-;    (run-program "/usr/local/bin/wget" raw-cmd :wait nil)
+   (run-program "/usr/local/bin/wget" raw-cmd :wait nil)
     ))
 
 (defmacro arte-info-m (nmr6-nmr3) 
