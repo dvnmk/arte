@@ -18,7 +18,7 @@
 
 Example
 -------
-'''
+`
 CL-USER> (i 043784-000)
 * TITL : "Schleierhaft"
 * KURZ : "Über die höchst komplexen Bedeutungsebenen des Schleiers in Deutschland und Frankreich."
@@ -32,4 +32,5 @@ CL-USER> (g 043784-000)
 
 CL-USER> (kill)
 #<EXTERNAL-PROCESS (killall wget)[1310] (EXITED : 0) #x30200221879D>
-'''
+`
+
