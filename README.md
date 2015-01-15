@@ -15,10 +15,11 @@
 * DONE filename zv datum.
 * DONE fur shell / ccl only 
 * DONE Unicode suppport als file-name y alle.
-* TODO file-nanme.log - "mp4"
+* DONE file-nanme.log - "mp4"
 
 Example
 -------
+
 ```common-lisp
 CL-USER> (i 043784-000)
 ```
