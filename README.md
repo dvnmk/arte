@@ -13,22 +13,23 @@
                                 sendung
                                        
 * DONE filename zv datum.
-* TODO fur shell / clisp, sbcl
-* DONE Unicode suppport als file-name => asciify filename
+* DONE fur shell / ccl only 
+* DONE Unicode suppport als file-name y alle.
 
 Example
 -------
 '''
-CL-USER> (ARTE-INFO-M 045260-001)
-* TITEL : "Erã¶ffnungskonzert Salzburger Festspiele 2011"
-* AIRED : 12/01/2015 02:00:00 +0100 - 19/01/2015 02:05:24 +0100
-* CASE  : 408_maestro
-* INFO  : (Deutschland, 2011, 87mn) ZDF
-* KURZ  : "Pierre Boulez und die Wiener Philharmoniker spielen Gustav Mahlers Opus 1, \"Das klagende Lied\". "
-* BES   : "Ein HÃ¶hepunkt jedes Musiksommers sind die Salzburger Festspiele. Der Programmschwerpunkt 2011 war das Werk Gustav Mahlers. Im ErÃ¶ffnungskonzert der Wiener Philharmoniker dirigierte Pierre Boulez dessen Opus 1, \"Das klagende Lied\", ergÃ¤nzt um Alban Bergs \"Lulu-Suite\". Durch den Abend fÃ¼hrt ARTE-Moderatorin Annette Gerlach."
-* MODES : (RTMP_LQ_1 HLS_SQ_1 HTTP_MP4_SQ_1 HTTP_MP4_MQ_1 RTMP_EQ_1 RTMP_MQ_1
-           HTTP_MP4_EQ_1 RTMP_SQ_1)
-* WGET  :
- wget -c http://artestras.vo.llnwd.net/v2/am/HBBTV/045260-001-B_SQ_1_VO-STA_01623913_MP4-2200_AMM-HBBTV.mp4 -O ErAffnungskonzert_Salzburger_Festspiele_2011-12012015.mp4
-NIL
+CL-USER> (i 043784-000)
+* TITL : "Schleierhaft"
+* KURZ : "Über die höchst komplexen Bedeutungsebenen des Schleiers in Deutschland und Frankreich."
+* INFO : Dokumentation (Deutschland, 2011, 52mn) ZDF
+* AIRD : 12/01/2015 03:30:00 +0100 - 19/01/2015 03:33:07 +0100
+* BESS : Heute finden sich Schleier in der westlichen Welt nur noch als Relikte in Form von Braut-, Witwen- oder Nonnenschleiern. Schleier sowie Kopftuch werden als typische Kopfbedeckung muslimischer Frauen angesehen. Und um den muslimischen Schleier und dessen Symbolgehalte geht es in der Dokumentation.
+T
+
+CL-USER> (g 043784-000)
+#<EXTERNAL-PROCESS (sh -c wget -c http://artestras.vo.llnwd.net/v2/am/HBBTV/043784-000-A_SQ_1_VOA_01623938_MP4-2200_AMM-HBBTV.mp4 -O Schleierhaft-1201.mp4 --no-verbose  -o Schleierhaft-1201.mp4.log --tries=4)[1309] (RUNNING) #x30200221B3FD>
+
+CL-USER> (kill)
+#<EXTERNAL-PROCESS (killall wget)[1310] (EXITED : 0) #x30200221879D>
 '''
