@@ -15,6 +15,7 @@
 * DONE filename zv datum.
 * DONE fur shell / ccl only 
 * DONE Unicode suppport als file-name y alle.
+* TODO file-nanme.log - "mp4"
 
 Example
 -------
