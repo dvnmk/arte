@@ -38,6 +38,5 @@ CL-USER> (g 043784-000)
 ```common-lisp
 CL-USER> (kill)
 ```
-#<EXTERNAL-PROCESS (killall wget)[1310] (EXITED : 0) #x30200221879D>
-l
 
+#<EXTERNAL-PROCESS (killall wget)[1310] (EXITED : 0) #x30200221879D>
