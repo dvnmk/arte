@@ -1,3 +1,19 @@
+;; (arte) dvnmk 2015
+;; heap exhausted faulty
+;; (defun wget (url output-name)
+;;   (with-open-file (my-stream (concatenate 'string output-name ".mp4")
+;;                              :direction :output
+;;                              :element-type '(unsigned-byte 8)
+;;                              :if-does-not-exist :create
+;;                              :if-exists :supersede)
+;;     (let ((content (drakma:http-request url)))
+;;       (loop for i across content do
+;;            (write-byte i my-stream)))))
+;;
+;; ** DONE filename zv datum.
+;; ** DONE fur shell / ccl only 
+;; ** DONE Unicode suppport als file-name y alle.
+
 (ql:quickload "yason")
 (ql:quickload "drakma")
 (setf drakma:*header-stream* nil)
@@ -63,21 +79,6 @@
 (defmacro g (nmr6-nmr3)
   `(let ((nmr (symbol-name ',nmr6-nmr3)))
      (arte-get nmr)))
-
-;; heap exhausted faulty
-;; (defun wget (url output-name)
-;;   (with-open-file (my-stream (concatenate 'string output-name ".mp4")
-;;                              :direction :output
-;;                              :element-type '(unsigned-byte 8)
-;;                              :if-does-not-exist :create
-;;                              :if-exists :supersede)
-;;     (let ((content (drakma:http-request url)))
-;;       (loop for i across content do
-;;            (write-byte i my-stream)))))
-
-;; ** DONE filename zv datum.
-;; ** DONE fur shell / ccl only 
-;; ** DONE Unicode suppport als file-name y alle.
 
 (cwd *speicher-dir*)
 
