@@ -57,12 +57,11 @@
                              0 4))
          (file-name (concatenate 'string
                                  (apo2bar (blanko2underbar (info "VTI" nivo-0)))
-                                 "-" kurz-datum
-                                 ".mp4"))
+                                 "-" kurz-datum))
          (url-simple-string (format nil "~A" url))  ;base-string 2 simple-base-string!
          (wget-cmd (concatenate 'string
                                 "wget -c " url-simple-string " -O "
-                                file-name
+                                file-name ".mp4"
                                 ;;" --progress=dot:giga "
                                 " --no-verbose "
                                 " -o " (concatenate 'string file-name ".log")
