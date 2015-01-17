@@ -93,7 +93,7 @@
          (file-name (concatenate 'string
                                  (apo2bar (blanko2underbar (info "VTI" nivo-0)))
                                  "+" kurz-datum
-                                 "==" (info "genre" nivo-0)))
+                                 "=" (info "genre" nivo-0)))
          (log-name (concatenate 'string
                                 (apo2bar (blanko2underbar (info "VTI" nivo-0)))
                                 "+" kurz-datum
