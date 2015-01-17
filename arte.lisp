@@ -97,7 +97,7 @@
          (log-name (concatenate 'string
                                 (apo2bar (blanko2underbar (info "VTI" nivo-0)))
                                 "+" kurz-datum
-                                "=" (blanko2underbar (info "V7T" nivo-0))))
+                                "==" (blanko2underbar (info "V7T" nivo-0))))
          (url-simple-string (format nil "~A" url))  ;base-string 2 simple-base-string!
          (wget-cmd (concatenate 'string
                                 "wget -c " url-simple-string
