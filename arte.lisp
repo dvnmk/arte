@@ -66,6 +66,9 @@
 (defun apo2bar (string)
   (cl-ppcre:regex-replace-all "'" string "-"))
 
+(defun apo22bar (string)
+  (cl-ppcre:regex-replace-all #\’ string "-"))
+
 (defun info (key tbl)
   (alexandria:ensure-gethash key tbl))
 
@@ -87,11 +90,11 @@
          (kurz-datum (subseq (alexandria:ensure-gethash "VS5" (info "VST" nivo-0))
                              0 4))
          (file-name (concatenate 'string
-                                 (apo2bar (blanko2underbar (info "VTI" nivo-0)))
+                                 (apo22bar (apo2bar (blanko2underbar (info "VTI" nivo-0))))
                                  "+" kurz-datum
                                  "~" (info "genre" nivo-0)))
          (log-name (concatenate 'string
-                                (apo2bar (blanko2underbar (info "VTI" nivo-0)))
+                                (apo22bar (apo2bar (blanko2underbar (info "VTI" nivo-0))))
                                 "+" kurz-datum
                                 "=" (blanko2underbar (info "V7T" nivo-0))))
          (url-simple-string (format nil "~A" url))  ;base-string 2 simple-base-string!
