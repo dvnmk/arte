@@ -16,6 +16,8 @@
 * DONE fur shell / ccl only 
 * DONE Unicode suppport als file-name y alle.
 * DONE file-nanme.log - "mp4"
+* TODO concatenate -> string-stream
+* TODO special character -> normal as name
 
 Example
 -------
