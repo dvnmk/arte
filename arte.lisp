@@ -12,10 +12,6 @@
 ;;       (loop for i across content do
 ;;            (write-byte i my-stream)))))
 
-;; ** DONE filename zv datum.
-;; ** DONE fur shell / ccl only 
-;; ** DONE Unicode suppport als file-name y alle.
-
 (ql:quickload "yason")
 (ql:quickload "drakma")
 (setf drakma:*header-stream* nil)
