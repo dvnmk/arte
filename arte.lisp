@@ -132,6 +132,24 @@
                  :wait nil
                  :output *standard-output*)))
 
+
+(defun arte-quck (nmr)
+  "arte-guck quicktime player ver."
+  (let* ((nivo-0 (alexandria:ensure-gethash "videoJsonPlayer" (nmr2json nmr)))
+         (url (alexandria:ensure-gethash "url"
+                                         (alexandria:ensure-gethash "HTTP_MP4_SQ_1"
+                                                                          (info "VSR" nivo-0))))
+         (url-simple-string (format nil "~A" url))  ;base-string 2 simple-base-string!
+         (cmd (concatenate 'string
+                           "open -a Quicktime\\ Player"
+                           " "
+                           url-simple-string
+                           )))
+    (run-program "/bin/sh"
+                 (list "-c" cmd)
+                 :wait nil
+                 :output *standard-output*)))
+
 (defmacro i (nmr-raw) 
   `(let ((nmr  (symbol-name ',nmr-raw)))
      (arte-info nmr)))
@@ -141,6 +159,11 @@
      (arte-nimm nmr)))
 
 (defmacro g (nmr-raw)
+  `(let ((nmr (symbol-name ',nmr-raw)))
+     (arte-guck nmr)))
+
+
+(defmacro q (nmr-raw)
   `(let ((nmr (symbol-name ',nmr-raw)))
      (arte-guck nmr)))
 
