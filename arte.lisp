@@ -89,7 +89,7 @@
     ;;(format t "~&* MODES : ~A" (alexandria:hash-table-keys (info "VSR" nivo-0 )))
     t))
 
-(defun arte-nimm (nmr)
+(defun arte-nimm (nmr &optional log-p)
   (let* ((nivo-0 (alexandria:ensure-gethash "videoJsonPlayer" (nmr2json nmr)))
          (url (alexandria:ensure-gethash "url"
                                          (alexandria:ensure-gethash "HTTP_MP4_SQ_1"
@@ -102,12 +102,14 @@
                                    (apo2bar (blanko2underbar (info "VTI" nivo-0)))))
                                  "+" kurz-datum
                                  "~" (info "genre" nivo-0)))
-         (log-name (concatenate 'string
-                                (slash2bar
-                                 (apo22bar
-                                  (apo2bar (blanko2underbar (info "VTI" nivo-0)))))
-                                "+" kurz-datum
-                                "=" (blanko2underbar (info "V7T" nivo-0))))
+         (log-name (if (zerop log-p)
+                       file-name
+                       (concatenate 'string
+                                       (slash2bar
+                                        (apo22bar
+                                         (apo2bar (blanko2underbar (info "VTI" nivo-0)))))
+                                       "+" kurz-datum
+                                       "=" (blanko2underbar (info "V7T" nivo-0)))))
          (url-simple-string (format nil "~A" url))  ;base-string 2 simple-base-string!
          (wget-cmd (concatenate 'string
                                 "wget -c " url-simple-string
