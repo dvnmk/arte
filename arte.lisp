@@ -160,8 +160,8 @@
      (arte-info nmr)))
 
 (defmacro n (nmr-raw &optional log-p)
-  `(let ((nmr (symbol-name ',nmr-raw ,log-p)))
-     (arte-nimm nmr)))
+  `(let ((nmr (symbol-name ',nmr-raw)))
+     (arte-nimm nmr ,log-p)))
 
 (defmacro g (nmr-raw)
   `(let ((nmr (symbol-name ',nmr-raw)))
