@@ -110,7 +110,7 @@
                                 " -O " file-name ".mp4"
                                 ;;" --progress=dot:giga "
                                 " --no-verbose "
-                                " -o " log-name ".log"
+                                " -o " log-name ".txt"
                                 " --tries=4")))
     (run-program "/bin/sh"
                  (list "-c" wget-cmd)
@@ -131,7 +131,6 @@
                  (list "-c" cmd)
                  :wait nil
                  :output *standard-output*)))
-
 
 (defun arte-quck (nmr)
   "arte-guck quicktime player ver."
@@ -165,7 +164,7 @@
 
 (defmacro q (nmr-raw)
   `(let ((nmr (symbol-name ',nmr-raw)))
-     (arte-guck nmr)))
+     (arte-quck nmr)))
 
 (cd *speicher-dir*)
 
