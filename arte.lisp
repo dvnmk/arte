@@ -76,12 +76,16 @@
   (alexandria:ensure-gethash key tbl))
 
 (defun arte-info (nmr)
-  (let* ((nivo-0 (alexandria:ensure-gethash "videoJsonPlayer" (nmr2json nmr))))
+  (let* ((nivo-0 (alexandria:ensure-gethash "videoJsonPlayer" (nmr2json nmr)))
+         (url (alexandria:ensure-gethash "url"
+                                         (alexandria:ensure-gethash "HTTP_MP4_SQ_1"
+                                                                    (info "VSR" nivo-0)))))
     (format t "~&* TITL : ~S" (info "VTI" nivo-0))
     (format t "~&* KURZ : ~S" (info "V7T" nivo-0))
     (format t "~&* INFO : ~A ~A" (info "genre" nivo-0) (info "infoProg" nivo-0))
     (format t "~&* AIRD : ~A - ~A" (info "VDA" nivo-0)(info "VRU" nivo-0))
     (format t "~&* BESS : ~A" (info "VDE" nivo-0))
+    (format t "~&* FILE : ~A~%" url)
     ;;(format t "~&* MODES : ~A" (alexandria:hash-table-keys (info "VSR" nivo-0 )))
     t))
 
