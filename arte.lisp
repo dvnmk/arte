@@ -69,8 +69,11 @@
 (defun apo22bar (string)
   (cl-ppcre:regex-replace-all "’" string "-"))
 
-(defun slash2bar (string)
-  (cl-ppcre:regex-replace-all "/" string "S"))
+(defun slash2.s (string)
+  (cl-ppcre:regex-replace-all "/" string ".s"))
+
+(defun normalisierung (string)
+  (slash2.s (apo22bar (apo2bar  (blanko2underbar string)))))
 
 (defun info (key tbl)
   (alexandria:ensure-gethash key tbl))
@@ -79,13 +82,20 @@
   (let* ((nivo-0 (alexandria:ensure-gethash "videoJsonPlayer" (nmr2json nmr)))
          (url (alexandria:ensure-gethash "url"
                                          (alexandria:ensure-gethash "HTTP_MP4_SQ_1"
-                                                                    (info "VSR" nivo-0)))))
+                                                                    (info "VSR" nivo-0))))
+         (kurz-datum (subseq (alexandria:ensure-gethash "VS5" (info "VST" nivo-0))
+                             0 4))
+         (file-name (concatenate 'string
+                                 (normalisierung (info "VTI" nivo-0))
+                                 "+" kurz-datum
+                                 "~" (info "genre" nivo-0)))
+         )
     (format t "~&* TITL : ~S" (info "VTI" nivo-0))
     (format t "~&* KURZ : ~S" (info "V7T" nivo-0))
     (format t "~&* INFO : ~A ~A" (info "genre" nivo-0) (info "infoProg" nivo-0))
     (format t "~&* AIRD : ~A - ~A" (info "VDA" nivo-0)(info "VRU" nivo-0))
     (format t "~&* BESS : ~A" (info "VDE" nivo-0))
-    (format t "~&* FILE : ~A~%" url)
+    (format t "~&* FILE : ~%  wget -c ~A -O ~A.mp4 ~%" url file-name)
     ;;(format t "~&* MODES : ~A" (alexandria:hash-table-keys (info "VSR" nivo-0 )))
     t))
 
@@ -97,19 +107,15 @@
          (kurz-datum (subseq (alexandria:ensure-gethash "VS5" (info "VST" nivo-0))
                              0 4))
          (file-name (concatenate 'string
-                                 (slash2bar
-                                  (apo22bar
-                                   (apo2bar (blanko2underbar (info "VTI" nivo-0)))))
+                                 (normalisierung (info "VTI" nivo-0))
                                  "+" kurz-datum
                                  "~" (info "genre" nivo-0)))
-         (log-name (if (zerop log-p)
-                       file-name
-                       (concatenate 'string
-                                       (slash2bar
-                                        (apo22bar
-                                         (apo2bar (blanko2underbar (info "VTI" nivo-0)))))
-                                       "+" kurz-datum
-                                       "=" (blanko2underbar (info "V7T" nivo-0)))))
+         (log-name (cond ((null log-p)(concatenate 'string
+                                                   (normalisierung (info "VTI" nivo-0))
+                                                    "+" kurz-datum
+                                                    "=" (normalisierung (info "V7T" nivo-0))))
+                         ((zerop log-p) file-name)
+                         (t 'ERR)))
          (url-simple-string (format nil "~A" url))  ;base-string 2 simple-base-string!
          (wget-cmd (concatenate 'string
                                 "wget -c " url-simple-string
