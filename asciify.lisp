@@ -16,7 +16,7 @@
 ;;; Original code by Arthur Lemmens <alemmens@xs4all.nl>.
 ;;; Improved (multi-char rewriting) by Paul Foley <mycroft@actrix.gen.nz>.
 ;;; Additional character mappings by:
-;;;	Gisle Sælensminde <gisle@apal.ii.uib.no>
+;;;	Gisle SÃ¦lensminde <gisle@apal.ii.uib.no>
 ;;;	Nils Goesche <cartan@cartan.de>
 ;;;	Hannah Schroeter <hannah@schlund.de>
 ;;; Final assembly by Don Geddis <don@geddis.org>.
@@ -32,49 +32,49 @@
 ;;;----------------------------------------------------------------------------
 ;;;
 ;;; Examples:
-;;; USER> (asciify "José árbol niño")
+;;; USER> (asciify "JosÃ© Ã¡rbol niÃ±o")
 ;;; "Jose arbol nino"
-;;; USER> (asciify "¡no!" :default :skip)
+;;; USER> (asciify "Â¡no!" :default :skip)
 ;;; "no!"
-;;; USER> (asciify "¡no!" :default #\!)
+;;; USER> (asciify "Â¡no!" :default #\!)
 ;;; "!no!"
 ;;;
-;;; [Note: the last example no longer works, because "¡" is now part of the
+;;; [Note: the last example no longer works, because "Â¡" is now part of the
 ;;;  built-in map.  But it should work for some other unknown character.]
 ;;;
 ;;;----------------------------------------------------------------------------
 
 (defparameter *accent-rewrites*
   '(
-    ("áàâã" . #\a)
-    ("ÁÀÂÃ" . #\A)
-    ("å"    . "aa")
-    ("Å"    . "Aa")
-    ("äæ"   . "ae")
-    ("ÄÆ"   . "Ae")
-    ("ß"    . "ss")
-    ("ç"    . #\c)
-    ("Ç"    . #\C)
-    ("ëéèê" . #\e)
-    ("ËÉÈÊ" . #\E)
-    ("ïíìî" . #\i)
-    ("ÏÍÌÎ" . #\I)
-    ("ñ"    . #\n)
-    ("Ñ"    . #\N)
-    ("óòôõ" . #\o)
-    ("ÓÒÔÕ" . #\O)
-    ("öø"   . "oe")
-    ("Ö"    . "Oe")
-    ("ğş"   . "th")
-    ("ĞŞ"   . "Th")
-    ("úùû"  . #\u)
-    ("ÚÙÛ"  . #\U)
-    ("ü"    . "ue")
-    ("Ü"    . "Ue")
-    ("ı"    . #\y)
-    ("ÿ"    . "ij")
-    ("İ"    . #\Y)
-    ("¡¿"   . :skip)
+    ("Ã¡Ã Ã¢Ã£" . #\a)
+    ("ÃÃ€Ã‚Ãƒ" . #\A)
+    ("Ã¥"    . "aa")
+    ("Ã…"    . "Aa")
+    ("Ã¤Ã¦"   . "ae")
+    ("Ã„Ã†"   . "Ae")
+    ("ÃŸ"    . "ss")
+    ("Ã§"    . #\c)
+    ("Ã‡"    . #\C)
+    ("Ã«Ã©Ã¨Ãª" . #\e)
+    ("Ã‹Ã‰ÃˆÃŠ" . #\E)
+    ("Ã¯Ã­Ã¬Ã®" . #\i)
+    ("ÃÃÃŒÃ" . #\I)
+    ("Ã±"    . #\n)
+    ("Ã‘"    . #\N)
+    ("Ã³Ã²Ã´Ãµ" . #\o)
+    ("Ã“Ã’Ã”Ã•" . #\O)
+    ("Ã¶Ã¸"   . "oe")
+    ("Ã–"    . "Oe")
+    ("Ã°Ã¾"   . "th")
+    ("ÃÃ"   . "Th")
+    ("ÃºÃ¹Ã»"  . #\u)
+    ("ÃšÃ™Ã›"  . #\U)
+    ("Ã¼"    . "ue")
+    ("Ãœ"    . "Ue")
+    ("Ã½"    . #\y)
+    ("Ã¿"    . "ij")
+    ("Ã"    . #\Y)
+    ("Â¡Â¿"   . :skip)
     ))
 
 ;;;----------------------------------------------------------------------------

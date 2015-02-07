@@ -59,16 +59,16 @@
                                               :external-format :utf-8)))
     (yason:parse vec)))
 
-(defun normalisierung (string)
-  (labels ((slash2.s (x)
-             (cl-ppcre:regex-replace-all "/" x ".s"))
-           (apo22bar (x)
-             (cl-ppcre:regex-replace-all "’" x "-"))
-           (apo2bar (x)
-             (cl-ppcre:regex-replace-all "'" x "-"))
-           (blanko2underbar (x)
-             (cl-ppcre:regex-replace-all " " x "_"))))
-  (slash2.s (apo22bar (apo2bar  (blanko2underbar string)))))
+(defun normalisieren (string)
+  (flet ((slash2.s (x)
+           (cl-ppcre:regex-replace-all "/" x ".s"))
+         (apo22bar (x)
+           (cl-ppcre:regex-replace-all "’" x "-"))
+         (apo2bar (x)
+           (cl-ppcre:regex-replace-all "'" x "-"))
+         (blanko2underbar (x)
+           (cl-ppcre:regex-replace-all " " x "_")))
+    (slash2.s (apo22bar (apo2bar  (blanko2underbar string))))))
 
 (defun info (key tbl)
   (alexandria:ensure-gethash key tbl))
@@ -79,46 +79,41 @@
          (kurz-datum (subseq (info "VS5" (info "VST" nivo-0))
                              0 4))
          (file-name (concatenate 'string
-                                 (normalisierung (info "VTI" nivo-0))
+                                 (normalisieren (info "VTI" nivo-0))
                                  "+" kurz-datum
-                                 "~" (info "genre" nivo-0))))
-    (format t "~&* TITL : ~S" (info "VTI" nivo-0))
-    (format t "~&* KURZ : ~S" (info "V7T" nivo-0))
-    (format t "~&* INFO : ~A ~A" (info "genre" nivo-0) (info "infoProg" nivo-0))
-    (format t "~&* AIRD : ~A - ~A" (info "VDA" nivo-0)(info "VRU" nivo-0))
-    (format t "~&* BESS : ~A" (info "VDE" nivo-0))
-    (format t "~&* FILE : ~%  wget -c ~A -O ~A.mp4 --tries=4 ~%" url file-name)
-    ;;(format t "~&* MODES : ~A" (alexandria:hash-table-keys (info "VSR" nivo-0 )))
+                                 "~" (info "genre" nivo-0)))
+         (res (list :zum file-name
+                    :info  (info "infoProg" nivo-0)
+                    :kurz  (info "V7T" nivo-0)
+                    :bes   (info "VDE" nivo-0)
+                    ;;:mode  (alexandria:hash-table-keys (info "VSR" nivo-0))
+                    :url   url)))
+    (progn
+      (setf *tmp* res)
+      (format t "~{*~A ~8T~A~%~}" res))
     t))
 
 (defun arte-nimm (nmr)
-  (let* ((nivo-0 (info "videoJsonPlayer" (nmr2json nmr)))
-         (url (info "url" (info "HTTP_MP4_SQ_1" (info "VSR" nivo-0))))
-         (kurz-datum (subseq (info "VS5" (info "VST" nivo-0))
-                             0 4))
-         (file-name (concatenate 'string
-                                 (normalisierung (info "VTI" nivo-0))
-                                 "+" kurz-datum
-                                 "~" (info "genre" nivo-0)))
-         (cmd (format nil "wget -c ~A -O ~A.mp4 --no-verbose -a ~A.txt --tries=4"
-                           url file-name file-name)))
+  (arte-info nmr)
+  (let ((cmd (format nil "wget -c ~A -O ~A.mp4 --no-verbose -a ~a.txt --tries=4"
+                     (getf *tmp* :url) (getf *tmp* :zum) (getf *tmp* :zum))))
     (run-program "/bin/sh" (list "-c" cmd)
                  :wait nil
                  :output *standard-output*)))
 
 (defun arte-guck (nmr)
-  (let* ((nivo-0 (info "videoJsonPlayer" (nmr2json nmr)))
-         (url (info "url" (info "HTTP_MP4_SQ_1" (info "VSR" nivo-0))))
-         (cmd (format nil "mplayer -really-quiet -cache 10240 ~A" url)))
+  (arte-info nmr)
+  (let ( (cmd (format nil "mplayer -really-quiet -cache 10240 ~A"
+                      (getf *tmp* :url))))
     (run-program "/bin/sh" (list "-c" cmd)
                  :wait nil
                  :output *standard-output*)))
 
 (defun arte-quck (nmr)
   "arte-guck quicktime player ver."
-  (let* ((nivo-0 (info "videoJsonPlayer" (nmr2json nmr)))
-         (url (info "url" (info "HTTP_MP4_SQ_1" (info "VSR" nivo-0))))
-         (cmd (format nil "open -a Quicktime\\ Player ~A" url)))
+  (arte-info nmr)
+  (let ((cmd (format nil "open -a Quicktime\\ Player ~A"
+                     (getf *tmp* :url))))
     (run-program "/bin/sh" (list "-c" cmd)
                  :wait nil
                  :output *standard-output*)))
@@ -134,7 +129,6 @@
 (defmacro g (nmr-raw)
   `(let ((nmr (symbol-name ',nmr-raw)))
      (arte-guck nmr)))
-
 
 (defmacro q (nmr-raw)
   `(let ((nmr (symbol-name ',nmr-raw)))
