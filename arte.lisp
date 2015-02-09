@@ -133,7 +133,8 @@
   (let ((foo (getf (nth n *prozess*) :proz))
         (titl (getf (nth n *prozess*) :titl))
         (id (getf (nth n *prozess*) :id)))
-    (format t "~D ~A ~%  ~A ~A ~A~%~%" n titl id (external-process-id foo) (external-process-status foo))))
+    (format t "~D ~S ~%  ~A ~A <~A>~%~%"
+            n titl id (external-process-id foo) (external-process-status foo))))
 
 (defun check ()
   (do ((i 0 (+ 1 i)))
