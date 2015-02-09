@@ -15,11 +15,10 @@
 (ql:quickload "yason")
 (ql:quickload "drakma")
 (setf drakma:*header-stream* nil)
-(defvar *speicher-dir* #P"~/arte7")
+(defvar *speicher-dir* #P"~/arte7/")
 
 (defparameter *tmp* nil)
 (defparameter *prozess* '())
-(defparameter *titl-id* '())
 
 (defun cd (&optional dir)
   "Change directory and set default pathname"
@@ -93,10 +92,16 @@
                     :kurz  (info "V7T" nivo-0)
                     :lang   (info "VDE" nivo-0)
                     ;;:mode  (alexandria:hash-table-keys (info "VSR" nivo-0))
-                    :file   url)))
+                    :file   url
+                    :id (info "VPI" nivo-0))))
     (progn
       (setf *tmp* res)
-      (format t "~{*~A ~8T~A~%~}" res))
+      (format t "~{*~A ~8T~A~%~}" res)
+      (with-open-file (out (concatenate 'string "~/arte7/" file-name ".txt")
+                           :direction :output
+                           :if-exists :supersede)
+        (format out "~{*~A ~8T~A~%~}" res))
+      )
     t))
 
 (defun arte-nimm (nmr)
@@ -110,33 +115,30 @@
                               ;;:status-hook (format t "STATUS CHANGED")
                               ))
          (res (list :titl (getf *tmp* :titl)
-                    :id (external-process-id proz))))
-    (push res *titl-id*)
-    (push proz *prozess*)))
+                    :id (getf *tmp* :id)
+                    :proz proz)))
+    (push res *prozess*)
+    t ))
 
 (defun prozess-reset ()
   ":exited :signaled weg func"
-  (setf *prozess* nil)
-  (setf *titl-id* nil))
+  (setf *prozess* nil))
 
-(defun proz-aus-id (id)
-  (car (remove-if-not #'(lambda (x) (equal id (external-process-id x)))
-                      *prozess*)))
-
-(defun kill-nth (n)
+(defun kill (n)
   "sigint 2 sigkill 9"
-  (signal-external-process (nth n *prozess*) 2
+  (signal-external-process (getf (nth n *prozess*) :proz) 2
                            :error-if-exited nil))
 
-(defun kill-id (n)
-  "kill m/ id"
-  (signal-external-process (proz-aus-id n) 2
-                           :error-if-exited nil))
+(defun check-nth (n)
+  (let ((foo (getf (nth n *prozess*) :proz))
+        (titl (getf (nth n *prozess*) :titl))
+        (id (getf (nth n *prozess*) :id)))
+    (format t "~D ~A ~%  ~A ~A ~A~%~%" n titl id (external-process-id foo) (external-process-status foo))))
 
-(defun prozess ()
-  (format t "~{~A ~}" *titl-id*)
-  (format t "~{~A ~}~%" (mapcar #'external-process-status *prozess*))
-)
+(defun check ()
+  (do ((i 0 (+ 1 i)))
+      ((equal i (length *prozess*)) t)
+    (check-nth i)))
 
 (defun arte-guck (nmr)
   (arte-info nmr)
