@@ -17,6 +17,10 @@
 (setf drakma:*header-stream* nil)
 (defvar *speicher-dir* #P"~/arte7")
 
+(defparameter *tmp* nil)
+(defparameter *prozess* '())
+(defparameter *titl-id* '())
+
 (defun cd (&optional dir)
   "Change directory and set default pathname"
   (cond
@@ -50,6 +54,8 @@
     (setq dir (parse-namestring dir)))
       dir))))
 
+(cd *speicher-dir*)
+
 (defun nmr2json (nmr)
   (let* ((json-url (concatenate 'string
                                 "http://arte.tv/papi/tvguide/videos/stream/player/D/"
@@ -82,12 +88,12 @@
                                  (normalisieren (info "VTI" nivo-0))
                                  "+" kurz-datum
                                  "~" (info "genre" nivo-0)))
-         (res (list :zum file-name
+         (res (list :titl file-name
                     :info  (info "infoProg" nivo-0)
                     :kurz  (info "V7T" nivo-0)
-                    :bes   (info "VDE" nivo-0)
+                    :lang   (info "VDE" nivo-0)
                     ;;:mode  (alexandria:hash-table-keys (info "VSR" nivo-0))
-                    :url   url)))
+                    :file   url)))
     (progn
       (setf *tmp* res)
       (format t "~{*~A ~8T~A~%~}" res))
@@ -95,16 +101,47 @@
 
 (defun arte-nimm (nmr)
   (arte-info nmr)
-  (let ((cmd (format nil "wget -c ~A -O ~A.mp4 --no-verbose -a ~a.txt --tries=4"
-                     (getf *tmp* :url) (getf *tmp* :zum) (getf *tmp* :zum))))
-    (run-program "/bin/sh" (list "-c" cmd)
-                 :wait nil
-                 :output *standard-output*)))
+  (let* ((cmd (format nil "wget -c ~A -O ~A.mp4 --no-verbose -a ~a.txt --tries=4"
+                     (getf *tmp* :file)
+                     (getf *tmp* :titl) (getf *tmp* :titl)))
+        (proz (run-program "/bin/sh" (list "-c" cmd)
+                              :wait nil
+                              :output *standard-output*
+                              ;;:status-hook (format t "STATUS CHANGED")
+                              ))
+         (res (list :titl (getf *tmp* :titl)
+                    :id (external-process-id proz))))
+    (push res *titl-id*)
+    (push proz *prozess*)))
+
+(defun prozess-reset ()
+  ":exited :signaled weg func"
+  (setf *prozess* nil)
+  (setf *titl-id* nil))
+
+(defun proz-aus-id (id)
+  (car (remove-if-not #'(lambda (x) (equal id (external-process-id x)))
+                      *prozess*)))
+
+(defun kill-nth (n)
+  "sigint 2 sigkill 9"
+  (signal-external-process (nth n *prozess*) 2
+                           :error-if-exited nil))
+
+(defun kill-id (n)
+  "kill m/ id"
+  (signal-external-process (proz-aus-id n) 2
+                           :error-if-exited nil))
+
+(defun prozess ()
+  (format t "~{~A ~}" *titl-id*)
+  (format t "~{~A ~}~%" (mapcar #'external-process-status *prozess*))
+)
 
 (defun arte-guck (nmr)
   (arte-info nmr)
   (let ( (cmd (format nil "mplayer -really-quiet -cache 10240 ~A"
-                      (getf *tmp* :url))))
+                      (getf *tmp* :file))))
     (run-program "/bin/sh" (list "-c" cmd)
                  :wait nil
                  :output *standard-output*)))
@@ -113,7 +150,7 @@
   "arte-guck quicktime player ver."
   (arte-info nmr)
   (let ((cmd (format nil "open -a Quicktime\\ Player ~A"
-                     (getf *tmp* :url))))
+                     (getf *tmp* :file))))
     (run-program "/bin/sh" (list "-c" cmd)
                  :wait nil
                  :output *standard-output*)))
@@ -121,26 +158,21 @@
 (defmacro i (nmr-raw) 
   `(let ((nmr  (symbol-name ',nmr-raw)))
      (arte-info nmr)))
-
 (defmacro n (nmr-raw)
   `(let ((nmr (symbol-name ',nmr-raw)))
      (arte-nimm nmr)))
-
 (defmacro g (nmr-raw)
   `(let ((nmr (symbol-name ',nmr-raw)))
      (arte-guck nmr)))
-
 (defmacro q (nmr-raw)
   `(let ((nmr (symbol-name ',nmr-raw)))
      (arte-quck nmr)))
 
-(cd *speicher-dir*)
-
-(defun kill ()
-  (run-program "/bin/sh" '("-c" "killall wget")
-               :output *standard-output*)
-  (run-program "bin/sh" '("-c" "killall mplayer")
-               :output *standard-output*))
+;; (defun kill ()
+;;   (run-program "/bin/sh" '("-c" "killall wget")
+;;                :output *standard-output*)
+;;   (run-program "/bin/sh" '("-c" "killall mplayer")
+;;                :output *standard-output*))
 
 
 ;; ;;TODO
