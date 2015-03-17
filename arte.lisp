@@ -137,9 +137,9 @@
             n titl id (external-process-id foo) (external-process-status foo))))
 
 (defun check ()
-  (do ((i 0 (+ 1 i)))
-      ((equal i (length *prozess*)) t)
-    (check-nth i)))
+  (do ((i (length *prozess*) (- i 1)))
+      ((zerop i) t)
+    (check-nth (- i 1))))
 
 (defun arte-guck (nmr)
   (arte-info nmr)
