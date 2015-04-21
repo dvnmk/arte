@@ -12,9 +12,9 @@
 ;;       (loop for i across content do
 ;;            (write-byte i my-stream)))))
 
-(ql:quickload "yason")
-(ql:quickload "drakma")
-(setf drakma:*header-stream* nil)
+(asdf:load-system "yason")
+(asdf:load-system "drakma")
+(Setf drakma:*header-stream* nil)
 (defvar *speicher-dir* #P"~/arte7/")
 
 (defparameter *tmp* nil)
