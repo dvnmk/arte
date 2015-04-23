@@ -210,7 +210,7 @@
 
 
 ;; house:
-(defparameter *server* (bordeaux-threads:make-thread (lambda () (house:start 4444))))
+(defparameter *server* (bordeaux-threads:make-thread (lambda () (house:start 8888))))
 
 (house:define-handler (i :content-type "text/html") ((n :string))
   (progn
