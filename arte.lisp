@@ -218,12 +218,25 @@
 <a href=http://google.de>(CHECK)</a>
 </body></html>" (check-nth 0)))
 
-(house:define-handler (foo :content-type "text/html") ((num :string))
-  (who:with-html-output-to-string (*standard-output* nil :prologue t :indent t)
-    (:html
-     (:head
-      (:title "(ARTE)"))
-     (:body :bgcolor "violet"
-            (:h1 (format t "~A" num))
-            (:div (i num))))
-    (values)))
+(house:define-handler (foo :content-type "text/html") ((id :string))
+  (progn
+    
+    (arte-info  id)
+    (cl-who:with-html-output-to-string (*standard-output* nil :prologue t :indent t)
+      (:html
+       (:head
+        (:title "(ARTE)"))
+       (:body :bgcolor "violet"
+              (:h1 (format t "~A" (nth 1 *tmp*)))
+              (:h1 (format t "~A" (nth 3 *tmp*)))
+              (:h1 (format t "~A" (nth 5 *tmp*)))
+              (:h1 (format t "~A" (nth 7 *tmp*)))
+              (:a :href  (nth 9 *tmp*)
+                  (:h1 (write-string (nth 9 *tmp*)))
+                  ) 
+              (:h1 (format t "~A" (nth 11 *tmp*)))
+              
+              
+              )
+       )
+      (values))))
