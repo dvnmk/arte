@@ -211,32 +211,45 @@
 ;; house:
 (defparameter *server* (bordeaux-threads:make-thread (lambda () (house:start 4444))))
 
-(house:define-handler (a3 :content-type "text/html") ((id :string))
-  (format nil "
-<html><head><title>ARTE</title></head><body>
-<h4>~A</h4>
-<a href=http://google.de>(CHECK)</a>
-</body></html>" (check-nth 0)))
-
-(house:define-handler (foo :content-type "text/html") ((id :string))
+(house:define-handler (i :content-type "text/html") ((n :string))
   (progn
-    
-    (arte-info  id)
+    (arte-info  n)
     (cl-who:with-html-output-to-string (*standard-output* nil :prologue t :indent t)
       (:html
        (:head
-        (:title "(ARTE)"))
+        (:title (format t "(ARTE-INFO ~A)" n)))
        (:body :bgcolor "violet"
               (:h1 (format t "~A" (nth 1 *tmp*)))
               (:h1 (format t "~A" (nth 3 *tmp*)))
               (:h1 (format t "~A" (nth 5 *tmp*)))
               (:h1 (format t "~A" (nth 7 *tmp*)))
               (:a :href  (nth 9 *tmp*)
-                  (:h1 (write-string (nth 9 *tmp*)))
+                  ;;  (:h1 (write-string (nth 9 *tmp*)))
+                  (:h1 "(guck)")
                   ) 
-              (:h1 (format t "~A" (nth 11 *tmp*)))
-              
-              
-              )
-       )
-      (values))))
+             ;; (:h1 (format t "~A" (nth 11 *tmp*)))
+              (:h1 (:a :href "./c"
+                   "(check)")))))))
+
+(house:define-handler (n :content-type "text/html") ((n :string))
+  (progn
+    (arte-nimm  n)
+    (cl-who:with-html-output-to-string (*standard-output* nil :prologue t :indent t)
+      (:html
+       (:head
+        (:title (format t "(ARTE-NIMM ~A)" n)))
+       (:body :bgcolor "violet"
+              (:h1 (format t "~A" (nth 1 *tmp*)))
+              (:h1 (format t "~A" (nth 3 *tmp*)))
+              (:h1 (format t "~A" (nth 5 *tmp*)))
+              (:h1 (format t "~A" (nth 7 *tmp*)))
+              (:a :href  (nth 9 *tmp*)
+            ;;      (:h1 (write-string (nth 9 *tmp*)))
+                  (:h1 "(guck)")
+                  ) 
+          ;;    (:h1 (format t "~A" (nth 11 *tmp*)))
+              (:h1 (:a :href "./c"
+                       "(check)")))))))
+
+(house:define-handler (c :content-type "text/plain") ()
+  (format nil "~{~A~}" *prozess*))
