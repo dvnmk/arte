@@ -15,6 +15,7 @@
 ;; (defpackage :arte
 ;;   (:use :yason :drakma :hunchentoot :cl-who))
 
+(asdf:load-system "cl-who")
 (asdf:load-system "yason")
 (asdf:load-system "drakma")
 (asdf:load-system "house")
