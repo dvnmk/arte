@@ -221,14 +221,13 @@
         (:title (format t "(ARTE-INFO ~A)" n)))
        (:body :bgcolor "violet"
               (:h1 (format t "~A" (nth 1 *tmp*)))
-              (:h1 (format t "~A" (nth 3 *tmp*)))
-              (:h1 (format t "~A" (nth 5 *tmp*)))
-              (:h1 (format t "~A" (nth 7 *tmp*)))
-              (:h1 (:a :href (nth 9 *tmp*) "(guck)")
-                   (:a :href (format nil "./n?n=~A" n) "(nimm)")
-                   (:a :href "./c" "(check)")
-
-                   ))))))
+              (:h2 (format t "~A" (nth 3 *tmp*)))
+              (:h2 (format t "~A" (nth 5 *tmp*)))
+              (:h2 (format t "~A" (nth 7 *tmp*)))
+              (:h1 (:a :href (nth 9 *tmp*) "(guck)"))
+              (:h1 (:a :href (format nil "./n?n=~A" n) "(nimm)"))
+              (:h1 (:a :href "./c" "(check)")
+))))))
 
 (house:define-handler (n :content-type "text/html") ((n :string))
   (progn
@@ -239,12 +238,12 @@
         (:title (format t "(ARTE-NIMM ~A)" n)))
        (:body :bgcolor "violet"
               (:h1 (format t "~A" (nth 1 *tmp*)))
-              (:h1 (format t "~A" (nth 3 *tmp*)))
-              (:h1 (format t "~A" (nth 5 *tmp*)))
-              (:h1 (format t "~A" (nth 7 *tmp*)))
-              (:h1 (:a :href (nth 9 *tmp*) "(guck)")
-                   (:a :href "./c" "(check)")
-                   ))))))
+              (:h2 (format t "~A" (nth 3 *tmp*)))
+              (:h2 (format t "~A" (nth 5 *tmp*)))
+              (:h2 (format t "~A" (nth 7 *tmp*)))
+              (:h1 (:a :href (nth 9 *tmp*) "(guck)"))
+              (:h1 (:a :href "./c" "(check)"))             
+              )))))
 
 (house:define-handler (c :content-type "text/plain") ()
   (format nil "~{~A~}" *prozess*))
