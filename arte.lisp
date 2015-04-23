@@ -12,9 +12,13 @@
 ;;       (loop for i across content do
 ;;            (write-byte i my-stream)))))
 
+;; (defpackage :arte
+;;   (:use :yason :drakma :hunchentoot :cl-who))
+
 (asdf:load-system "yason")
 (asdf:load-system "drakma")
-(Setf drakma:*header-stream* nil)
+(asdf:load-system "house")
+(setf drakma:*header-stream* nil)
 (defvar *speicher-dir* #P"~/arte7/")
 
 (defparameter *tmp* nil)
@@ -202,3 +206,24 @@
 ;;                        :if-exists :supersede)
 ;;     (with-standard-io-syntax
 ;;       (print *db* out))))
+
+
+;; house:
+(defparameter *server* (bordeaux-threads:make-thread (lambda () (house:start 4444))))
+
+(house:define-handler (a3 :content-type "text/html") ((id :string))
+  (format nil "
+<html><head><title>ARTE</title></head><body>
+<h4>~A</h4>
+<a href=http://google.de>(CHECK)</a>
+</body></html>" (check-nth 0)))
+
+(house:define-handler (foo :content-type "text/html") ((num :string))
+  (who:with-html-output-to-string (*standard-output* nil :prologue t :indent t)
+    (:html
+     (:head
+      (:title "(ARTE)"))
+     (:body :bgcolor "violet"
+            (:h1 (format t "~A" num))
+            (:div (i num))))
+    (values)))
