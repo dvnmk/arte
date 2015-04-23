@@ -224,13 +224,11 @@
               (:h1 (format t "~A" (nth 3 *tmp*)))
               (:h1 (format t "~A" (nth 5 *tmp*)))
               (:h1 (format t "~A" (nth 7 *tmp*)))
-              (:a :href  (nth 9 *tmp*)
-                  ;;  (:h1 (write-string (nth 9 *tmp*)))
-                  (:h1 "(guck)")
-                  ) 
-             ;; (:h1 (format t "~A" (nth 11 *tmp*)))
-              (:h1 (:a :href "./c"
-                   "(check)")))))))
+              (:h1 (:a :href (nth 9 *tmp*) "(guck)")
+                   (:a :href (format nil "./n?n=~A" n) "(nimm)")
+                   (:a :href "./c" "(check)")
+
+                   ))))))
 
 (house:define-handler (n :content-type "text/html") ((n :string))
   (progn
@@ -244,13 +242,9 @@
               (:h1 (format t "~A" (nth 3 *tmp*)))
               (:h1 (format t "~A" (nth 5 *tmp*)))
               (:h1 (format t "~A" (nth 7 *tmp*)))
-              (:a :href  (nth 9 *tmp*)
-            ;;      (:h1 (write-string (nth 9 *tmp*)))
-                  (:h1 "(guck)")
-                  ) 
-          ;;    (:h1 (format t "~A" (nth 11 *tmp*)))
-              (:h1 (:a :href "./c"
-                       "(check)")))))))
+              (:h1 (:a :href (nth 9 *tmp*) "(guck)")
+                   (:a :href "./c" "(check)")
+                   ))))))
 
 (house:define-handler (c :content-type "text/plain") ()
   (format nil "~{~A~}" *prozess*))
