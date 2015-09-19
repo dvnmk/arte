@@ -75,6 +75,7 @@
     ("ÿ"    . "ij")
     ("Ý"    . #\Y)
     ("¡¿"   . :skip)
+ 
     ))
 
 ;;;----------------------------------------------------------------------------
@@ -87,7 +88,7 @@ removed, when DEFAULT is :SKIP; or left as is, when DEFAULT is NIL."
 
   (with-output-to-string (result)
      (loop for char across string
-	   if (char<= char #\Delete)
+	   if (char<= char #\Rubout)
 	   do
 	   (write-char char result)
 	   else do
