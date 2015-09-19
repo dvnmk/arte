@@ -19,6 +19,8 @@
 (asdf:load-system "yason")
 (asdf:load-system "drakma")
 (asdf:load-system "house")
+(defvar *app-dir* #P"~/arte")
+(load #P"~/arte/asciify.lisp")
 (setf drakma:*header-stream* nil)
 (defvar *speicher-dir* #P"~/arte7/")
 
@@ -70,15 +72,18 @@
     (yason:parse vec)))
 
 (defun normalisieren (string)
-  (flet ((slash2.s (x)
+  (flet ((slash-2-.s (x)
            (cl-ppcre:regex-replace-all "/" x ".s"))
-         (apo22bar (x)
+         (apo-2--2-bar (x)
            (cl-ppcre:regex-replace-all "’" x "-"))
-         (apo2bar (x)
+         (apo-2-bar (x)
            (cl-ppcre:regex-replace-all "'" x "-"))
-         (blanko2underbar (x)
-           (cl-ppcre:regex-replace-all " " x "_")))
-    (slash2.s (apo22bar (apo2bar  (blanko2underbar string))))))
+         (blanko-2-underbar (x)
+           (cl-ppcre:regex-replace-all " " x "_"))
+         (colon-2-o (x)
+           (cl-ppcre:regex-replace-all ":" x "_"))
+         )
+    (asciify (colon-2-o (slash-2-.s (apo-2--2-bar (apo-2-bar  (blanko-2-underbar string))))))))
 
 (defun info (key tbl)
   (alexandria:ensure-gethash key tbl))
@@ -90,8 +95,8 @@
                              0 4))
          (file-name (concatenate 'string
                                  (normalisieren (info "VTI" nivo-0))
-                                 "+" kurz-datum
-                                 "~" (info "genre" nivo-0)))
+                                 "-" kurz-datum
+                                 "-" (info "genre" nivo-0)))
          (res (list :titl file-name
                     :info  (info "infoProg" nivo-0)
                     :kurz  (info "V7T" nivo-0)
@@ -102,18 +107,19 @@
     (progn
       (setf *tmp* res)
       (format t "~{*~A ~8T~A~%~}" res)
-      (with-open-file (out (concatenate 'string "~/arte7/" file-name ".txt")
+      (with-open-file (out (format nil "~A~A.txt" *speicher-dir* (getf *tmp* :titl))
+                       ;(concatenate 'string "~/arte7/" file-name ".txt")
                            :direction :output
-                           :if-exists :supersede)
+                           :if-exists :supersede
+                           :external-format :unix)
         (format out "~{*~A ~8T~A~%~}" res))
       )
     t))
 
 (defun arte-nimm (nmr)
   (arte-info nmr)
-  (let* ((cmd (format nil "wget -c ~A -O ~A.mp4 --no-verbose -a ~a.txt --tries=4"
-                     (getf *tmp* :file)
-                     (getf *tmp* :titl) (getf *tmp* :titl)))
+  (let* ((cmd (format nil "wget -c ~A -O ~A.mp4 --no-verbose -a ~A.txt --tries=4"
+                     (getf *tmp* :file)(getf *tmp* :titl) (getf *tmp* :titl)))
         (proz (run-program "/bin/sh" (list "-c" cmd)
                               :wait nil
                               :output *standard-output*
