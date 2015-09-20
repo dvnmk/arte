@@ -82,8 +82,10 @@
            (cl-ppcre:regex-replace-all " " x "_"))
          (colon-2-o (x)
            (cl-ppcre:regex-replace-all ":" x "_"))
+         (and-2-y (x)
+           (cl-ppcre:regex-replace-all "&" x "y"))
          )
-    (asciify (colon-2-o (slash-2-.s (apo-2--2-bar (apo-2-bar  (blanko-2-underbar string))))))))
+    (asciify (and-2-y (colon-2-o (slash-2-.s (apo-2--2-bar (apo-2-bar  (blanko-2-underbar string)))))))))
 
 (defun info (key tbl)
   (alexandria:ensure-gethash key tbl))
