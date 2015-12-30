@@ -12,15 +12,18 @@
 ;;       (loop for i across content do
 ;;            (write-byte i my-stream)))))
 
-;; (defpackage :arte
-;;   (:use :yason :drakma :hunchentoot :cl-who))
+;;;; package.lisp
 
-(asdf:load-system "cl-who")
-(asdf:load-system "yason")
-(asdf:load-system "drakma")
-(asdf:load-system "house")
+(defpackage #:arte
+  (:use #:cl))
+
+;; (asdf:load-system "cl-who")
+;; (asdf:load-system "yason")
+;; (asdf:load-system "drakma")
+;; (asdf:load-system "house")
+
 (defvar *app-dir* #P"~/arte")
-(load #P"~/arte/asciify.lisp")
+;; (load "asciify.lisp")
 (setf drakma:*header-stream* nil)
 (defvar *speicher-dir* #P"~/arte7/")
 
