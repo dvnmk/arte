@@ -7,7 +7,7 @@
   :serial t
   :depends-on (#:cl-who #:yason #:drakma #:house)
   :components (
-	       ;; (:file "package")
+	       (:file "package")
 	       (:file "asciify")
                (:file "arte")))
 

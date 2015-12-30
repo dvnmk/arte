@@ -12,10 +12,6 @@
 ;;       (loop for i across content do
 ;;            (write-byte i my-stream)))))
 
-;;;; package.lisp
-
-(defpackage #:arte 
-  (:use #:cl))
 
 ;; (asdf:load-system "cl-who")
 ;; (asdf:load-system "yason")
