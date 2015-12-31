@@ -12,6 +12,7 @@
 ;;       (loop for i across content do
 ;;            (write-byte i my-stream)))))
 
+(in-package #:arte)
 
 ;; (asdf:load-system "cl-who")
 ;; (asdf:load-system "yason")
