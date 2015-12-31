@@ -146,7 +146,7 @@
   (let ((foo (getf (nth n *prozess*) :proz))
         (titl (getf (nth n *prozess*) :titl))
         (id (getf (nth n *prozess*) :id)))
-    (format t "~D ~S ~%  ~A ~A <~A>~%~%"
+    (format t "~D ~S  ~A ~A <~A>"
             n titl id (ccl:external-process-id foo) (ccl:external-process-status foo))))
 
 (defun check ()
