@@ -215,9 +215,29 @@
 ;;     (with-standard-io-syntax
 ;;       (print *db* out))))
 
+(defun url-to-n (url)
+  "http://www.arte.tv/guide/de/058313-015-A/
+berlin-live-dave-stewart?autoplay=1 > 058313-015"
+  (string-right-trim "-"
+		     (cl-ppcre:scan-to-strings "[^b]*-"
+				      (nth 5 (cl-ppcre:split "/" url))))  )
 
 ;; house:
 (defparameter *server* (bordeaux-threads:make-thread (lambda () (house:start 8888))))
+ 
+(house:define-handler (i :content-type "text/html") ((u :string))
+  (let ((n (url-to-n u)))
+    (progn    (arte-info n))
+    (cl-who:with-html-output-to-string (*standard-output* nil :prologue t :indent t)
+      (:html (:head (:title (format t "(ARTE-INFO ~s)" n)))
+	     (:body :bgcolor "violet"
+		    (:h1 (format t "~A" (nth 1 *tmp*)))
+		    (:h2 (format t "~A" (nth 3 *tmp*)))
+		    (:h2 (format t "~A" (nth 5 *tmp*)))
+		    (:h2 (format t "~A" (nth 7 *tmp*)))
+		    (:h1 (:a :href (nth 9 *tmp*) "(guck)"))
+		    (:h1 (:a :href (format nil "./n?n=~A" n) "(nimm)"))
+		    (:h1 (:a :href "./c" "(check)")))       ))))
 
 (house:define-handler (i :content-type "text/html") ((n :string))
   (progn
@@ -233,8 +253,7 @@
               (:h2 (format t "~A" (nth 7 *tmp*)))
               (:h1 (:a :href (nth 9 *tmp*) "(guck)"))
               (:h1 (:a :href (format nil "./n?n=~A" n) "(nimm)"))
-              (:h1 (:a :href "./c" "(check)")
-))))))
+              (:h1 (:a :href "./c" "(check)")))))))
 
 (house:define-handler (n :content-type "text/html") ((n :string))
   (progn
