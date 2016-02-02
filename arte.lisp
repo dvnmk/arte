@@ -12,6 +12,7 @@
 ;;       (loop for i across content do
 ;;            (write-byte i my-stream)))))
 
+(in-package #:arte)
 
 ;; (asdf:load-system "cl-who")
 ;; (asdf:load-system "yason")
@@ -121,7 +122,7 @@
   (arte-info nmr)
   (let* ((cmd (format nil "wget -c ~A -O ~A.mp4 --no-verbose -a ~A.txt --tries=4"
                      (getf *tmp* :file)(getf *tmp* :titl) (getf *tmp* :titl)))
-        (proz (run-program "/bin/sh" (list "-c" cmd)
+        (proz (ccl:run-program "/bin/sh" (list "-c" cmd)
                               :wait nil
                               :output *standard-output*
                               ;;:status-hook (format t "STATUS CHANGED")
@@ -145,8 +146,8 @@
   (let ((foo (getf (nth n *prozess*) :proz))
         (titl (getf (nth n *prozess*) :titl))
         (id (getf (nth n *prozess*) :id)))
-    (format t "~D ~S ~%  ~A ~A <~A>~%~%"
-            n titl id (external-process-id foo) (external-process-status foo))))
+    (format t "~D ~S  ~A ~A <~A>"
+            n titl id (ccl:external-process-id foo) (ccl:external-process-status foo))))
 
 (defun check ()
   (do ((i (length *prozess*) (- i 1)))
