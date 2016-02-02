@@ -238,7 +238,8 @@ berlin-live-dave-stewart?autoplay=1 > 058313-015"
 		    (:h2 (format t "~A" (nth 7 *tmp*)))
 		    (:h1 (:a :href (nth 9 *tmp*) "(guck)"))
 		    (:h1 (:a :href (format nil "./n?n=~A" n) "(nimm)"))
-		    (:h1 (:a :href "./c" "(check)")))       ))))
+		    (:h1 (:a :href "./c" "(check)")))))))
+
 
 (house:define-handler (i :content-type "text/html") ((n :string))
   (progn
