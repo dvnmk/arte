@@ -1,23 +1,6 @@
 ;; (arte) dvnmk 2015
 
-;; heap exhausted faulty wget func
-;;
-;; (defun wget (url output-name)
-;;   (with-open-file (my-stream (concatenate 'string output-name ".mp4")
-;;                              :direction :output
-;;                              :element-type '(unsigned-byte 8)
-;;                              :if-does-not-exist :create
-;;                              :if-exists :supersede)
-;;     (let ((content (drakma:http-request url)))
-;;       (loop for i across content do
-;;            (write-byte i my-stream)))))
-
 (in-package #:arte)
-
-;; (asdf:load-system "cl-who")
-;; (asdf:load-system "yason")
-;; (asdf:load-system "drakma")
-;; (asdf:load-system "house")
 
 (defvar *app-dir* #P"~/arte")
 ;; (load "asciify.lisp")
@@ -25,7 +8,7 @@
 (defvar *speicher-dir* #P"~/arte7/")
 
 (defparameter *tmp* nil)
-(defparameter *prozess* '())
+(defparameter *prozess* nil)
 
 (defun cd (&optional dir)
   "Change directory and set default pathname"
@@ -63,10 +46,11 @@
 (cd *speicher-dir*)
 
 (defun nmr2json (nmr)
-  (let* ((json-url (concatenate 'string
-                                "http://arte.tv/papi/tvguide/videos/stream/player/D/"
-                                nmr
-                                "_PLUS7-D/ALL/ALL.json"))
+  (let* ((json-url (concatenate
+		    'string
+		    "http://arte.tv/papi/tvguide/videos/stream/player/D/"
+		    nmr
+		    "_PLUS7-D/ALL/ALL.json"))
          (vec (flexi-streams:octets-to-string (drakma:http-request json-url)
                                               :external-format :utf-8)))
     (yason:parse vec)))
@@ -83,9 +67,12 @@
          (colon-2-o (x)
            (cl-ppcre:regex-replace-all ":" x "_"))
          (and-2-y (x)
-           (cl-ppcre:regex-replace-all "&" x "y"))
-         )
-    (asciify (and-2-y (colon-2-o (slash-2-.s (apo-2--2-bar (apo-2-bar  (blanko-2-underbar string)))))))))
+           (cl-ppcre:regex-replace-all "&" x "y")))
+    (asciify (and-2-y
+	      (colon-2-o
+	       (slash-2-.s
+		(apo-2--2-bar
+		 (apo-2-bar (blanko-2-underbar string)))))))))
 
 (defun info (key tbl)
   (alexandria:ensure-gethash key tbl))
@@ -109,13 +96,13 @@
     (progn
       (setf *tmp* res)
       (format t "~{*~A ~8T~A~%~}" res)
-      (with-open-file (out (format nil "~A~A.txt" *speicher-dir* (getf *tmp* :titl))
-                       ;(concatenate 'string "~/arte7/" file-name ".txt")
+      (with-open-file (out (format nil "~A~A.txt" *speicher-dir*
+				   (getf *tmp* :titl))
+;; (concatenate 'string "~/arte7/" file-name ".txt")
                            :direction :output
                            :if-exists :supersede
                            :external-format :unix)
-        (format out "~{*~A ~8T~A~%~}" res))
-      )
+        (format out "~{*~A ~8T~A~%~}" res)))
     t))
 
 (defun arte-nimm (nmr)
@@ -146,7 +133,7 @@
   (let ((foo (getf (nth n *prozess*) :proz))
         (titl (getf (nth n *prozess*) :titl))
         (id (getf (nth n *prozess*) :id)))
-    (format t "~D ~S  ~A ~A <~A>"
+    (format t "~&~2,D ~S ~% ~A ~A ~A ~%"
             n titl id (ccl:external-process-id foo) (ccl:external-process-status foo))))
 
 (defun check ()
@@ -156,8 +143,8 @@
 
 (defun arte-guck (nmr)
   (arte-info nmr)
-  (let ( (cmd (format nil "mplayer -really-quiet -cache 10240 ~A"
-                      (getf *tmp* :file))))
+  (let ((cmd (format nil "mplayer -really-quiet -cache 10240 ~A"
+		     (getf *tmp* :file))))
     (run-program "/bin/sh" (list "-c" cmd)
                  :wait nil
                  :output *standard-output*)))
@@ -221,30 +208,35 @@
 berlin-live-dave-stewart?autoplay=1 > 058313-015"
   (string-right-trim "-"
 		     (cl-ppcre:scan-to-strings "[^b]*-"
-				      (nth 5 (cl-ppcre:split "/" url))))  )
+				      (nth 5 (cl-ppcre:split "/" url)))))
 
 ;; house:
 (defparameter *server* (bordeaux-threads:make-thread (lambda () (house:start 8888))))
  
 (house:define-handler (i :content-type "text/html") ((u :string))
   (let ((n (url-to-n u)))
-    (progn    (arte-info n))
-    (cl-who:with-html-output-to-string (*standard-output* nil :prologue t :indent t)
-      (:html (:head (:title (format t "(ARTE-INFO ~s)" n)))
-	     (:body :bgcolor "violet"
-		    (:h1 (format t "~A" (nth 1 *tmp*)))
-		    (:h2 (format t "~A" (nth 3 *tmp*)))
-		    (:h2 (format t "~A" (nth 5 *tmp*)))
-		    (:h2 (format t "~A" (nth 7 *tmp*)))
-		    (:h1 (:a :href (nth 9 *tmp*) "(guck)"))
-		    (:h1 (:a :href (format nil "./n?n=~A" n) "(nimm)"))
-		    (:h1 (:a :href "./c" "(check)")))))))
+    (progn
+      (arte-info n)
+      (cl-who:with-html-output-to-string (*standard-output* nil
+							    :prologue t
+							    :indent t)
+	(:html (:head (:title (format t "(ARTE-INFO ~s)" n)))
+	       (:body :bgcolor "violet"
+		      (:h1 (format t "~A" (nth 1 *tmp*)))
+		      (:h2 (format t "~A" (nth 3 *tmp*)))
+		      (:h2 (format t "~A" (nth 5 *tmp*)))
+		      (:h2 (format t "~A" (nth 7 *tmp*)))
+		      (:h1 (:a :href (nth 9 *tmp*) "(guck)"))
+		      (:h1 (:a :href (format nil "./n?n=~A" n) "(nimm)"))
+		      (:h1 (:a :href "./c" "(check)"))))))))
 
 
 (house:define-handler (i :content-type "text/html") ((n :string))
   (progn
     (arte-info  n)
-    (cl-who:with-html-output-to-string (*standard-output* nil :prologue t :indent t)
+    (cl-who:with-html-output-to-string (*standard-output* nil
+							  :prologue t
+							  :indent t)
       (:html
        (:head
         (:title (format t "(ARTE-INFO ~A)" n)))
@@ -260,7 +252,9 @@ berlin-live-dave-stewart?autoplay=1 > 058313-015"
 (house:define-handler (n :content-type "text/html") ((n :string))
   (progn
     (arte-nimm  n)
-    (cl-who:with-html-output-to-string (*standard-output* nil :prologue t :indent t)
+    (cl-who:with-html-output-to-string (*standard-output* nil
+							  :prologue t
+							  :indent t)
       (:html
        (:head
         (:title (format t "(ARTE-NIMM ~A)" n)))
@@ -275,3 +269,7 @@ berlin-live-dave-stewart?autoplay=1 > 058313-015"
 
 (house:define-handler (c :content-type "text/plain") ()
   (format nil "~{~A~}" *prozess*))
+
+
+;; (house:define-handler (c :content-type "text/plain") ()
+;;   (format nil "~A" (check-nth 1)))
