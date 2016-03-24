@@ -2,10 +2,10 @@
 
 (asdf:defsystem #:arte
   :description "Describe arte here"
-  :author "Your Name <your.name@example.com>"
+  :author "dvnmk <divinomko@gmail.com>"
   :license "Specify license here"
   :serial t
-  :depends-on (#:cl-who #:yason #:drakma #:house)
+  :depends-on (#:cl-who #:yason #:drakma #:hunchentoot)
   :components (
 	       (:file "package")
 	       (:file "asciify")
