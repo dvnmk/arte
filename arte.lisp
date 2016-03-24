@@ -210,28 +210,76 @@ berlin-live-dave-stewart?autoplay=1 > 058313-015"
 		     (cl-ppcre:scan-to-strings "[^b]*-"
 				      (nth 5 (cl-ppcre:split "/" url)))))
 
-;; house:
-(defparameter *server* (bordeaux-threads:make-thread (lambda () (house:start 8888))))
+;; ;; house:
+;; (defparameter *server* (bordeaux-threads:make-thread (lambda () (house:start 8888))))
  
-(house:define-handler (i :content-type "text/html") ((u :string))
-  (let ((n (url-to-n u)))
-    (progn
-      (arte-info n)
-      (cl-who:with-html-output-to-string (*standard-output* nil
-							    :prologue t
-							    :indent t)
-	(:html (:head (:title (format t "(ARTE-INFO ~s)" n)))
-	       (:body :bgcolor "violet"
-		      (:h1 (format t "~A" (nth 1 *tmp*)))
-		      (:h2 (format t "~A" (nth 3 *tmp*)))
-		      (:h2 (format t "~A" (nth 5 *tmp*)))
-		      (:h2 (format t "~A" (nth 7 *tmp*)))
-		      (:h1 (:a :href (nth 9 *tmp*) "(guck)"))
-		      (:h1 (:a :href (format nil "./n?n=~A" n) "(nimm)"))
-		      (:h1 (:a :href "./c" "(check)"))))))))
+;; (house:define-handler (i :content-type "text/html") ((u :string))
+;;   (let ((n (url-to-n u)))
+;;     (progn
+;;       (arte-info n)
+;;       (cl-who:with-html-output-to-string (*standard-output* nil
+;; 							    :prologue t
+;; 							    :indent t)
+;; 	(:html (:head (:title (format t "(ARTE-INFO ~s)" n)))
+;; 	       (:body :bgcolor "violet"
+;; 		      (:h1 (format t "~A" (nth 1 *tmp*)))
+;; 		      (:h2 (format t "~A" (nth 3 *tmp*)))
+;; 		      (:h2 (format t "~A" (nth 5 *tmp*)))
+;; 		      (:h2 (format t "~A" (nth 7 *tmp*)))
+;; 		      (:h1 (:a :href (nth 9 *tmp*) "(guck)"))
+;; 		      (:h1 (:a :href (format nil "./n?n=~A" n) "(nimm)"))
+;; 		      (:h1 (:a :href "./c" "(check)"))))))))
+
+;; (house:define-handler (i :content-type "text/html") ((n :string))
+;;   (progn
+;;     (arte-info  n)
+;;     (cl-who:with-html-output-to-string (*standard-output* nil
+;; 							  :prologue t
+;; 							  :indent t)
+;;       (:html
+;;        (:head
+;;         (:title (format t "(ARTE-INFO ~A)" n)))
+;;        (:body :bgcolor "violet"
+;;               (:h1 (format t "~A" (nth 1 *tmp*)))
+;;               (:h2 (format t "~A" (nth 3 *tmp*)))
+;;               (:h2 (format t "~A" (nth 5 *tmp*)))
+;;               (:h2 (format t "~A" (nth 7 *tmp*)))
+;;               (:h1 (:a :href (nth 9 *tmp*) "(guck)"))
+;;               (:h1 (:a :href (format nil "./n?n=~A" n) "(nimm)"))
+;;               (:h1 (:a :href "./c" "(check)")))))))
+
+;; (house:define-handler (n :content-type "text/html") ((n :string))
+;;   (progn
+;;     (arte-nimm  n)
+;;     (cl-who:with-html-output-to-string (*standard-output* nil
+;; 							  :prologue t
+;; 							  :indent t)
+;;       (:html
+;;        (:head
+;;         (:title (format t "(ARTE-NIMM ~A)" n)))
+;;        (:body :bgcolor "violet"
+;;               (:h1 (format t "~A" (nth 1 *tmp*)))
+;;               (:h2 (format t "~A" (nth 3 *tmp*)))
+;;               (:h2 (format t "~A" (nth 5 *tmp*)))
+;;               (:h2 (format t "~A" (nth 7 *tmp*)))
+;;               (:h1 (:a :href (nth 9 *tmp*) "(guck)"))
+;;               (:h1 (:a :href "./c" "(check)"))             
+;;               )))))
+
+;; (house:define-handler (c :content-type "text/plain") ()
+;;   (format nil "~{~A~}" *prozess*))
 
 
-(house:define-handler (i :content-type "text/html") ((n :string))
+;; hunchentoot server
+
+(hunchentoot:start (make-instance 'hunchentoot:easy-acceptor :port 8888))
+
+(hunchentoot:define-easy-handler (check-hander :uri "/c")
+    ()
+  (format nil "~{~A~}" *prozess*))
+
+(hunchentoot:define-easy-handler (info-handler :uri "/i")
+    ((n))
   (progn
     (arte-info  n)
     (cl-who:with-html-output-to-string (*standard-output* nil
@@ -249,27 +297,31 @@ berlin-live-dave-stewart?autoplay=1 > 058313-015"
               (:h1 (:a :href (format nil "./n?n=~A" n) "(nimm)"))
               (:h1 (:a :href "./c" "(check)")))))))
 
-(house:define-handler (n :content-type "text/html") ((n :string))
+(hunchentoot:define-easy-handler (nimm-handler :uri "/n")
+    ((n))
   (progn
-    (arte-nimm  n)
+    (arte-info  n)
     (cl-who:with-html-output-to-string (*standard-output* nil
 							  :prologue t
 							  :indent t)
       (:html
        (:head
-        (:title (format t "(ARTE-NIMM ~A)" n)))
+        (:title (format t "(ARTE-INFO ~A)" n)))
        (:body :bgcolor "violet"
               (:h1 (format t "~A" (nth 1 *tmp*)))
               (:h2 (format t "~A" (nth 3 *tmp*)))
               (:h2 (format t "~A" (nth 5 *tmp*)))
               (:h2 (format t "~A" (nth 7 *tmp*)))
               (:h1 (:a :href (nth 9 *tmp*) "(guck)"))
-              (:h1 (:a :href "./c" "(check)"))             
-              )))))
+              (:h1 (:a :href (format nil "./n?n=~A" n) "(nimm)"))
+              (:h1 (:a :href "m./c" "(check)")))))))
 
-(house:define-handler (c :content-type "text/plain") ()
-  (format nil "~{~A~}" *prozess*))
-
-
-;; (house:define-handler (c :content-type "text/plain") ()
-;;   (format nil "~A" (check-nth 1)))
+(hunchentoot:define-easy-handler (foo-handler :uri "/foo")
+    ()
+  (cl-who:with-html-output (*http-stream*)
+  (loop for (link . title) in '(("http://zappa.com/" . "Frank Zappa")
+                                ("http://marcusmiller.com/" . "Marcus Miller")
+                                ("http://www.milesdavis.com/" . "Miles Davis"))
+        do (htm (:a :href link
+                  (:b (str title)))
+                :br))))
