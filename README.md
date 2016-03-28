@@ -43,3 +43,7 @@ CL-USER> (kill)
 ```
 
 #<EXTERNAL-PROCESS (killall wget)[1310] (EXITED : 0) #x30200221879D>
+
+
+# TODO
+* :status-hook
