@@ -300,7 +300,7 @@ berlin-live-dave-stewart?autoplay=1 > 058313-015"
 (hunchentoot:define-easy-handler (nimm-handler :uri "/n")
     ((n))
   (progn
-    (arte-info  n)
+    (arte-nimm n)
     (cl-who:with-html-output-to-string (*standard-output* nil
 							  :prologue t
 							  :indent t)
@@ -314,7 +314,7 @@ berlin-live-dave-stewart?autoplay=1 > 058313-015"
               (:h2 (format t "~A" (nth 7 *tmp*)))
               (:h1 (:a :href (nth 9 *tmp*) "(guck)"))
               (:h1 (:a :href (format nil "./n?n=~A" n) "(nimm)"))
-              (:h1 (:a :href "m./c" "(check)")))))))
+              (:h1 (:a :href "./c" "(check)")))))))
 
 (hunchentoot:define-easy-handler (foo-handler :uri "/foo")
     ()
@@ -325,3 +325,12 @@ berlin-live-dave-stewart?autoplay=1 > 058313-015"
         do (htm (:a :href link
                   (:b (str title)))
                 :br))))
+
+;;; TODO cups is not running on mut.local, sondern stx.local
+(defun html2lpr (url)
+  (let ((cmd (format nil "html2ps ~A | lpr" url)))
+    (ccl:run-program "/bin/sh" (list "-c" cmd)
+		     :wait nil
+		     :output *standard-output*
+		     ;;:status-hook (format t "STATUS CHANGED")
+		     )))
