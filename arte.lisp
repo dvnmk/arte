@@ -216,13 +216,14 @@
 (defun url-to-n (url)
   "http://www.arte.tv/guide/de/058313-015-A/
 berlin-live-dave-stewart?autoplay=1 > 058313-015"
-  (string-right-trim "-"
-		     (cl-ppcre:scan-to-strings "[^b]*-"
-				      (nth 5 (cl-ppcre:split "/" url)))))
-
+  (if (equal (length url) 10)
+      url
+      (string-right-trim "-"
+			   (cl-ppcre:scan-to-strings "[^b]*-"
+						     (nth 5 (cl-ppcre:split "/" url))))
+))
 
 ;; hunchentoot server
-
 (hunchentoot:start (make-instance 'hunchentoot:easy-acceptor :port 8888))
 
 (hunchentoot:define-easy-handler (check-handler :uri "/c")()
@@ -230,51 +231,51 @@ berlin-live-dave-stewart?autoplay=1 > 058313-015"
 
 (hunchentoot:define-easy-handler (info-handler :uri "/i")
     ((n))
-  (progn
-    (arte-info  n)
-    (cl-who:with-html-output-to-string (*standard-output* nil
-							  :prologue t
-							  :indent t)
-      (:html
-       (:head8
-        (:title (format t "(ARTE-INFO ~A)" n)))
-       (:body :bgcolor "violet"
-              (:h1 (format t "~A" (nth 1 *tmp*)))
-              (:h2 (format t "~A" (nth 3 *tmp*)))
-              (:h2 (format t "~A" (nth 5 *tmp*)))
-              (:h2 (format t "~A" (nth 7 *tmp*)))
-              (:h1 (:a :href (nth 9 *tmp*) "(guck)"))
-              (:h1 (:a :href (format nil "./n?n=~A" n) "(nimm)"))
-              (:h1 (:a :href "./c" "(check)")))))))
+    (let ((n (url-to-n n))) 
+      (progn
+	(arte-info  n)
+	(cl-who:with-html-output-to-string (*standard-output* nil
+							      :prologue t
+							      :indent t)
+	  (:html
+	   (:head8
+	    (:title (format t "(ARTE-INFO ~A)" n)))
+	   (:body :bgcolor "violet"
+		  (:h1 (format t "~A" (nth 1 *tmp*)))
+		  (:h2 (format t "~A" (nth 3 *tmp*)))
+		  (:h2 (format t "~A" (nth 5 *tmp*)))
+		  (:h2 (format t "~A" (nth 7 *tmp*)))
+		  (:h1 (:a :href (nth 9 *tmp*) "(guck)"))
+		  (:h1 (:a :href (format nil "./n?n=~A" n) "(nimm)"))
+		  (:h1 (:a :href "./c" "(check)"))))))))
 
 (hunchentoot:define-easy-handler (nimm-handler :uri "/n")
-    ((n))
-  (progn
-    (arte-nimm n)
-    (cl-who:with-html-output-to-string (*standard-output* nil
-							  :prologue t
-							  :indent t)
-      (:html
-       (:head
-        (:title (format t "(ARTE-INFO ~A)" n)))
-       (:body :bgcolor "violet"
-              (:h1 (format t "~A" (nth 1 *tmp*)))
-              (:h2 (format t "~A" (nth 3 *tmp*)))
-              (:h2 (format t "~A" (nth 5 *tmp*)))
-              (:h2 (format t "~A" (nth 7 *tmp*)))
-              (:h1 (:a :href (nth 9 *tmp*) "(guck)"))
-              (:h1 (:a :href (format nil "./n?n=~A" n) "(nimm)"))
-              (:h1 (:a :href "./c" "(check)")))))))
+				 ((n))
+				 (progn
+				   (arte-nimm n)
+				   (cl-who:with-html-output-to-string (*standard-output* nil
+											 :prologue t
+											 :indent t)
+				     (:html
+				      (:head
+				       (:title (format t "(ARTE-INFO ~A)" n)))
+				      (:body :bgcolor "violet"
+					     (:h1 (format t "~A" (nth 1 *tmp*)))
+					     (:h2 (format t "~A" (nth 3 *tmp*)))
+					     (:h2 (format t "~A" (nth 5 *tmp*)))
+					     (:h2 (format t "~A" (nth 7 *tmp*)))
+					     (:h1 (:a :href (nth 9 *tmp*) "(guck)"))
+					     (:h1 (:a :href (format nil "./n?n=~A" n) "(nimm)"))
+					     (:h1 (:a :href "./c" "(check)")))))))
 
-(hunchentoot:define-easy-handler (foo-handler :uri "/foo")
-    ()
-  (cl-who:with-html-output (*http-stream*)
-  (loop for (link . title) in '(("http://zappa.com/" . "Frank Zappa")
-                                ("http://marcusmiller.com/" . "Marcus Miller")
-                                ("http://www.milesdavis.com/" . "Miles Davis"))
-        do (htm (:a :href link
-                  (:b (str title)))
-                :br))))
+(hunchentoot:define-easy-handler (foo-handler :uri "/foo") ()
+				 (cl-who:with-html-output (*http-stream*)
+				   (loop for (link . title) in '(("http://zappa.com/" . "Frank Zappa")
+								 ("http://marcusmiller.com/" . "Marcus Miller")
+								 ("http://www.milesdavis.com/" . "Miles Davis"))
+				      do (htm (:a :href link
+						  (:b (str title)))
+					      :br))))
 
 ;;; TODO cups is not running on mut.local, sondern stx.local
 (defun html2lpr (url)
