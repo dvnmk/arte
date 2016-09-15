@@ -136,10 +136,22 @@
     (format t "~&~2,D ~S ~% ~A ~A ~A ~%"
             n titl id (ccl:external-process-id foo) (ccl:external-process-status foo))))
 
+(defun check-nth-z-list (n)
+  (let ((foo (getf (nth n *prozess*) :proz))
+        (titl (getf (nth n *prozess*) :titl))
+        (id (getf (nth n *prozess*) :id)))
+     (list n titl id (ccl:external-process-id foo) (ccl:external-process-status foo))))
+
 (defun check ()
   (do ((i (length *prozess*) (- i 1)))
       ((zerop i) t)
     (check-nth (- i 1))))
+
+(defun foo ()
+  (let ((res nil))
+  (do ((i (length *prozess*) (- i 1)))
+      ((zerop i) res)
+    (push (check-nth-z-list (- i 1)) res))))
 
 (defun arte-guck (nmr)
   (arte-info nmr)
@@ -213,11 +225,12 @@ berlin-live-dave-stewart?autoplay=1 > 058313-015"
 
 (hunchentoot:start (make-instance 'hunchentoot:easy-acceptor :port 8888))
 
-(hunchentoot:define-easy-handler (check-handler :uri "/c")
-    ()
-  (format nil "~{~A~}" *prozess*)
-  
-)
+(hunchentoot:define-easy-handler (check-handler :uri "/c")()
+(let ((res nil))
+  (do ((i (length *prozess*) (- i 1)))
+      ((zerop i) (format nil "~a" res))
+    (push (check-nth-z-list (- i 1)) res)))
+ )
 
 (hunchentoot:define-easy-handler (info-handler :uri "/i")
     ((n))
@@ -227,7 +240,7 @@ berlin-live-dave-stewart?autoplay=1 > 058313-015"
 							  :prologue t
 							  :indent t)
       (:html
-       (:head
+       (:head8
         (:title (format t "(ARTE-INFO ~A)" n)))
        (:body :bgcolor "violet"
               (:h1 (format t "~A" (nth 1 *tmp*)))
