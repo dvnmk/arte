@@ -129,29 +129,29 @@
   (signal-external-process (getf (nth n *prozess*) :proz) 2
                            :error-if-exited nil))
 
-(defun check-nth (n)
+(defun check-nth-pprint (n)
   (let ((foo (getf (nth n *prozess*) :proz))
         (titl (getf (nth n *prozess*) :titl))
         (id (getf (nth n *prozess*) :id)))
     (format t "~&~2,D ~S ~% ~A ~A ~A ~%"
             n titl id (ccl:external-process-id foo) (ccl:external-process-status foo))))
 
-(defun check-nth-z-list (n)
+(defun check-nth (n)
   (let ((foo (getf (nth n *prozess*) :proz))
         (titl (getf (nth n *prozess*) :titl))
         (id (getf (nth n *prozess*) :id)))
      (list n titl id (ccl:external-process-id foo) (ccl:external-process-status foo))))
 
-(defun check ()
+(defun check-pprint ()
   (do ((i (length *prozess*) (- i 1)))
       ((zerop i) t)
-    (check-nth (- i 1))))
+    (check-nth-pprint (- i 1))))
 
-(defun foo ()
+(defun check ()
   (let ((res nil))
   (do ((i (length *prozess*) (- i 1)))
       ((zerop i) res)
-    (push (check-nth-z-list (- i 1)) res))))
+    (push (check-nth (- i 1)) res))))
 
 (defun arte-guck (nmr)
   (arte-info nmr)
@@ -226,11 +226,7 @@ berlin-live-dave-stewart?autoplay=1 > 058313-015"
 (hunchentoot:start (make-instance 'hunchentoot:easy-acceptor :port 8888))
 
 (hunchentoot:define-easy-handler (check-handler :uri "/c")()
-(let ((res nil))
-  (do ((i (length *prozess*) (- i 1)))
-      ((zerop i) (format nil "~a" res))
-    (push (check-nth-z-list (- i 1)) res)))
- )
+  (format nil "~A" (check)) )
 
 (hunchentoot:define-easy-handler (info-handler :uri "/i")
     ((n))
