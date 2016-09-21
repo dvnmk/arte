@@ -112,7 +112,7 @@
         (proz (ccl:run-program "/bin/sh" (list "-c" cmd)
                               :wait nil
                               :output *standard-output*
-                              ;;:status-hook (format t "STATUS CHANGED")
+                              :status-hook (format t "STATUS CHANGED")
                               ))
          (res (list :titl (getf *tmp* :titl)
                     :id (getf *tmp* :id)
@@ -227,7 +227,7 @@ berlin-live-dave-stewart?autoplay=1 > 058313-015"
 (hunchentoot:start (make-instance 'hunchentoot:easy-acceptor :port 8888))
 
 (hunchentoot:define-easy-handler (check-handler :uri "/c")()
-  (format nil "~A" (check)) )
+  (format nil "~A ~A" *tmp* (check) ) )
 
 (hunchentoot:define-easy-handler (info-handler :uri "/i")
     ((n))
