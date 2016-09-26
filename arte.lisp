@@ -227,7 +227,7 @@ berlin-live-dave-stewart?autoplay=1 > 058313-015"
 (hunchentoot:start (make-instance 'hunchentoot:easy-acceptor :port 8888))
 
 (hunchentoot:define-easy-handler (check-handler :uri "/c")()
-  (format nil "~S ~S" *tmp* (check) ) )
+  (format nil "~S ~S" (check) *tmp* ) )
 
 (hunchentoot:define-easy-handler (info-handler :uri "/i")
     ((n))
