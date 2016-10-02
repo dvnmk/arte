@@ -147,6 +147,7 @@
       ((zerop i) t)
     (check-nth-pprint (- i 1))))
 
+;; TODO (checb :pprint t)
 (defun check ()
   (let ((res nil))
   (do ((i (length *prozess*) (- i 1)))

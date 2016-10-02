@@ -47,3 +47,4 @@ CL-USER> (kill)
 
 # TODO
 * :status-hook
+* (check :pprint t)
