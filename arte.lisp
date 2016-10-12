@@ -67,12 +67,19 @@
          (colon-2-o (x)
            (cl-ppcre:regex-replace-all ":" x "_"))
          (and-2-y (x)
-           (cl-ppcre:regex-replace-all "&" x "y")))
-    (asciify (and-2-y
-	      (colon-2-o
-	       (slash-2-.s
-		(apo-2--2-bar
-		 (apo-2-bar (blanko-2-underbar string)))))))))
+           (cl-ppcre:regex-replace-all "&" x "y"))
+	 (paren-l-2-p (x)
+	   (cl-ppcre:regex-replace-all "\\(" x "p"))
+	 (paren-r-2-p (x)
+	   (cl-ppcre:regex-replace-all "\\)" x "p"))
+)
+    (asciify (paren-r-2-p
+	      (paren-l-2-p
+	       (and-2-y
+		(colon-2-o
+		 (slash-2-.s
+		  (apo-2--2-bar
+		   (apo-2-bar (blanko-2-underbar string)))))))))))
 
 (defun info (key tbl)
   (alexandria:ensure-gethash key tbl))
@@ -224,8 +231,10 @@ berlin-live-dave-stewart?autoplay=1 > 058313-015"
 						     (nth 5 (cl-ppcre:split "/" url))))
 ))
 
+(defparameter *server-port* 8888)
 ;; hunchentoot server
-(hunchentoot:start (make-instance 'hunchentoot:easy-acceptor :port 8888))
+(setf *web-server* (make-instance 'hunchentoot:easy-acceptor :port *server-port*))
+(hunchentoot:start *web-server*)
 
 (hunchentoot:define-easy-handler (check-handler :uri "/c")()
   (format nil "~S ~S" (check) *tmp* ) )
@@ -239,7 +248,7 @@ berlin-live-dave-stewart?autoplay=1 > 058313-015"
 							      :prologue t
 							      :indent t)
 	  (:html
-	   (:head8
+	   (:head
 	    (:title (format t "(ARTE-INFO ~A)" n)))
 	   (:body :bgcolor "violet"
 		  (:h1 (format t "~A" (nth 1 *tmp*)))
@@ -269,14 +278,6 @@ berlin-live-dave-stewart?autoplay=1 > 058313-015"
 					     (:h1 (:a :href (format nil "./n?n=~A" n) "(nimm)"))
 					     (:h1 (:a :href "./c" "(check)")))))))
 
-(hunchentoot:define-easy-handler (foo-handler :uri "/foo") ()
-				 (cl-who:with-html-output (*http-stream*)
-				   (loop for (link . title) in '(("http://zappa.com/" . "Frank Zappa")
-								 ("http://marcusmiller.com/" . "Marcus Miller")
-								 ("http://www.milesdavis.com/" . "Miles Davis"))
-				      do (htm (:a :href link
-						  (:b (str title)))
-					      :br))))
 
 ;;; TODO cups is not running on mut.local, sondern stx.local
 (defun html2lpr (url)
@@ -286,3 +287,25 @@ berlin-live-dave-stewart?autoplay=1 > 058313-015"
 		     :output *standard-output*
 		     ;;:status-hook (format t "STATUS CHANGED")
 		     )))
+
+(hunchentoot:define-easy-handler (say-yo :uri "/yo") (name)
+  (setf (hunchentoot:content-type*) "text/plain")
+  (format nil "WWHey~@[ ~A~]!" name))
+
+
+(hunchentoot:define-easy-handler (foo-handler :uri "/foo")
+    ((n))
+    (cl-who:with-html-output-to-string (*standard-output* nil
+							      :prologue t
+							      :indent t)
+	  (:html
+	   (:head
+	    (:title (format t "(ARTE-INFO ~A)" n)))
+	   (:body :bgcolor "violet"
+		  (:h1 (format t "~A" (nth 1 *tmp*)))
+		  (:h2 (format t "~A" (nth 3 *tmp*)))
+		  (:h2 (format t "~A" (nth 5 *tmp*)))
+		  (:h2 (format t "~A" (nth 7 *tmp*)))
+		  (:h1 (:a :href (nth 9 *tmp*) "(guck)"))
+		  (:h1 (:a :href (format nil "./n?n=~A" n) "(nimm)"))
+		  (:h1 (:a :href "./c" "(check)"))))))
